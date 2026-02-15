@@ -4,19 +4,26 @@ import Dashboard from '../pages/Dashboard';
 import Orders from '../pages/Orders';
 import Order from '../pages/Order';
 import Products from '../pages/Products';
+import Categories from '../pages/Categories';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
+import ProtectedRoute from '../components/layout/ProtectedRoute';
 
 const AppRoutes = () => {
     return (
         <Routes>
             <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
 
-            <Route element={<MainLayout />}>
+            <Route element={
+                <ProtectedRoute>
+                    <MainLayout />
+                </ProtectedRoute>
+            }>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/orders" element={<Orders />} />
-                <Route path="/orders/:id" element={<Order />} />
+                <Route path="/order" element={<Order />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/categories" element={<Categories />} />
             </Route>
         </Routes>
     );

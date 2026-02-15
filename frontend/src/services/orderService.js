@@ -1,15 +1,11 @@
-export const saveOrder = async (orderData) => {
-    console.log("Saving order:", orderData);
+import api from "./api";
 
-    // Simulate API delay
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                success: true,
-                orderId: Math.floor(Math.random() * 100000),
-            });
-        }, 1000);
-    });
+export const saveOrder = async (orderData) => {
+    const response = await api.post("orders/", orderData);
+    return response.data;
 };
 
-// await axios.post("/api/orders", orderData)
+export const getOrders = async () => {
+    const response = await api.get("orders/");
+    return response.data;
+};

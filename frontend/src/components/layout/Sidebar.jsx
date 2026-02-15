@@ -1,11 +1,14 @@
-// src/components/layout/Sidebar.jsx
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Sidebar = () => {
+    const { logout } = useContext(AuthContext);
     const menuItems = [
         { name: "Dashboard", path: "/" },
         { name: "Orders", path: "/orders" },
         { name: "Products", path: "/products" },
+        { name: "Categories", path: "/categories" },
         { name: "New Order", path: "/order" },
     ];
 
@@ -39,7 +42,10 @@ const Sidebar = () => {
 
             {/* Logout */}
             <div className="p-4 border-t">
-                <button className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                <button
+                    onClick={logout}
+                    className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
                     Logout
                 </button>
             </div>
