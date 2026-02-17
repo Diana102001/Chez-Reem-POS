@@ -88,10 +88,10 @@ const Products = () => {
     return (
         <div className="bg-white p-6 rounded-xl shadow h-full flex flex-col">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Products</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Products</h2>
                 <button
                     onClick={handleAddClick}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
                     Add Product
                 </button>
@@ -103,6 +103,7 @@ const Products = () => {
                         <tr className="border-b">
                             <th className="py-3 px-4 font-semibold text-gray-700">Name</th>
                             <th className="py-3 px-4 font-semibold text-gray-700">Category</th>
+                            <th className="py-3 px-4 font-semibold text-gray-700">Quantity</th>
                             <th className="py-3 px-4 font-semibold text-gray-700">Price</th>
                             <th className="py-3 px-4 font-semibold text-gray-700 text-right">Actions</th>
                         </tr>
@@ -110,13 +111,21 @@ const Products = () => {
                     <tbody>
                         {products.map((product) => (
                             <tr key={product.id} className="border-b hover:bg-gray-50">
-                                <td className="py-3 px-4">{product.name}</td>
-                                <td className="py-3 px-4">
-                                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                                <td className="py-4 px-4">
+                                    <p className="font-bold text-gray-900">{product.name}</p>
+                                    {product.details && (
+                                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide mt-0.5 line-clamp-1">
+                                            {product.details}
+                                        </p>
+                                    )}
+                                </td>
+                                <td className="py-4 px-4">
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-secondary/10 text-secondary uppercase tracking-wider">
                                         {getCategoryName(product.category)}
                                     </span>
                                 </td>
-                                <td className="py-3 px-4">${product.price}</td>
+                                <td className="py-3 px-4 font-mono-numbers">{product.quantity}</td>
+                                <td className="py-3 px-4 font-mono-numbers">${product.price}</td>
                                 <td className="py-3 px-4 text-right space-x-2">
                                     <button
                                         onClick={() => handleEditClick(product)}

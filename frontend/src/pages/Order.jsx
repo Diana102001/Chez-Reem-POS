@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { Plus, Minus, X, Check, ShoppingCart } from "lucide-react";
 import PaymentModal from "../components/payment/PaymentModal";
+import OptionSelectionModal from "../components/products/OptionSelectionModal";
 import { getProducts, getCategories } from "../services/productService";
 
 const Order = () => {
@@ -18,6 +20,8 @@ const Order = () => {
         total,
     } = useCart();
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+    const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
+    const [productForOptions, setProductForOptions] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,22 +56,22 @@ const Order = () => {
                 <div className="flex gap-3 mb-6 overflow-x-auto">
                     <button
                         onClick={() => setSelectedCategoryId("All")}
-                        className={`px-4 py-2 rounded-full transition whitespace-nowrap
+                        className={`px-6 py-2.5 rounded-xl font-bold transition-all border-2 whitespace-nowrap
                             ${selectedCategoryId === "All"
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-200 hover:bg-gray-300"
+                                ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                                : "bg-white border-border text-muted-foreground hover:border-primary/30 hover:text-primary"
                             }`}
                     >
-                        All
+                        All Items
                     </button>
                     {categories.map((category) => (
                         <button
                             key={category.id}
                             onClick={() => setSelectedCategoryId(category.id)}
-                            className={`px-4 py-2 rounded-full transition whitespace-nowrap
+                            className={`px-6 py-2.5 rounded-xl font-bold transition-all whitespace-nowrap border-2
                                 ${selectedCategoryId === category.id
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-gray-200 hover:bg-gray-300"
+                                    ? "bg-secondary border-secondary text-secondary-foreground shadow-lg shadow-secondary/20"
+                                    : "bg-white border-border text-muted-foreground hover:border-secondary/30 hover:text-secondary"
                                 }`}
                         >
                             {category.name}
@@ -80,15 +84,44 @@ const Order = () => {
                     {filteredProducts.map((product) => (
                         <button
                             key={product.id}
-                            onClick={() => addToCart(product)}
-                            className="p-6 bg-gray-100 rounded-2xl hover:bg-blue-100 transition text-left h-32 flex flex-col justify-between shadow-sm"
+                            onClick={() => {
+                                const category = categories.find(c => c.id === product.category);
+                                const catOptions = category?.options || [];
+                                const hasOptions = (product.options && product.options.length > 0) || (catOptions.length > 0);
+
+                                if (hasOptions) {
+                                    setProductForOptions(product);
+                                    setIsOptionModalOpen(true);
+                                } else {
+                                    addToCart(product);
+                                }
+                            }}
+                            className="p-5 bg-white border border-border rounded-2xl hover:bg-secondary/5 hover:border-secondary/30 transition-all text-left min-h-[180px] flex flex-col shadow-sm hover:shadow-md group"
                         >
-                            <h3 className="font-semibold text-lg line-clamp-2">
-                                {product.name}
-                            </h3>
-                            <p className="font-medium text-blue-600">
-                                ${product.price}
-                            </p>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-foreground text-base leading-tight line-clamp-2 group-hover:text-secondary transition-colors mb-1">
+                                    {product.name}
+                                </h3>
+                                {product.details && (
+                                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wide line-clamp-1">
+                                        {product.details}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="mt-4">
+                                <p className="font-black text-primary text-xl font-mono-numbers leading-none">
+                                    ${product.price}
+                                </p>
+                                <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                        Stock: {product.quantity}
+                                    </p>
+                                    <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                        <Plus className="w-3.5 h-3.5" />
+                                    </div>
+                                </div>
+                            </div>
                         </button>
                     ))}
                 </div>
@@ -107,29 +140,36 @@ const Order = () => {
 
                     {cart.map((item) => (
                         <div
-                            key={item.id}
-                            className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100"
+                            key={item.uniqueId}
+                            className="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100 group transition-all hover:border-secondary/20"
                         >
-                            <div>
-                                <p className="font-medium">{item.name}</p>
-                                <p className="text-sm text-gray-500">
-                                    ${item.price} x {item.quantity}
+                            <div className="flex-1">
+                                <p className="font-bold text-foreground">{item.name}</p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                    {item.selectedChoices && item.selectedChoices.map((c, i) => (
+                                        <span key={i} className="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">
+                                            {c.name}
+                                        </span>
+                                    ))}
+                                </div>
+                                <p className="text-xs font-bold text-primary mt-2 font-mono-numbers bg-primary/5 px-2 py-1 rounded-lg inline-block">
+                                    ${parseFloat(item.finalPrice).toFixed(2)} <span className="text-muted-foreground font-medium text-[10px] ml-1">x {item.quantity}</span>
                                 </p>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => decreaseQty(item.id)}
-                                    className="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-200"
+                                    onClick={() => decreaseQty(item.uniqueId)}
+                                    className="w-8 h-8 flex items-center justify-center bg-white border border-border text-red-500 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all shadow-sm active:scale-95"
                                 >
                                     -
                                 </button>
 
-                                <span className="w-6 text-center font-medium">{item.quantity}</span>
+                                <span className="w-6 text-center font-black text-foreground">{item.quantity}</span>
 
                                 <button
-                                    onClick={() => increaseQty(item.id)}
-                                    className="w-8 h-8 flex items-center justify-center bg-green-100 text-green-600 rounded-full hover:bg-green-200"
+                                    onClick={() => increaseQty(item.uniqueId)}
+                                    className="w-8 h-8 flex items-center justify-center bg-white border border-border text-green-500 rounded-xl hover:bg-green-50 hover:border-green-200 transition-all shadow-sm active:scale-95"
                                 >
                                     +
                                 </button>
@@ -149,11 +189,11 @@ const Order = () => {
                         onClick={() => setIsPaymentOpen(true)}
                         className={`w-full py-4 rounded-xl text-lg font-bold transition shadow-lg
                             ${cart.length === 0
-                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                : "bg-blue-600 text-white hover:bg-blue-700"
+                                ? "bg-muted text-muted-foreground cursor-not-allowed"
+                                : "bg-primary text-primary-foreground hover:opacity-90 shadow-primary/20"
                             }`}
                     >
-                        Proceed to Payment
+                        Place Order
                     </button>
 
                     {cart.length > 0 && (
@@ -169,6 +209,17 @@ const Order = () => {
             <PaymentModal
                 isOpen={isPaymentOpen}
                 onClose={() => setIsPaymentOpen(false)}
+            />
+            <OptionSelectionModal
+                isOpen={isOptionModalOpen}
+                onClose={() => setIsOptionModalOpen(false)}
+                product={productForOptions}
+                categoryOptions={
+                    productForOptions
+                        ? categories.find(c => c.id === productForOptions.category)?.options || []
+                        : []
+                }
+                onConfirm={addToCart}
             />
         </div>
     );

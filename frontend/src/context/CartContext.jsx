@@ -7,27 +7,44 @@ export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
 
     // Add product
-    const addToCart = (product) => {
+    const addToCart = (product, selectedChoices = []) => {
         setCart((prevCart) => {
-            const existing = prevCart.find((item) => item.id === product.id);
+            // Create a unique key for the item based on ID and options
+            const optionsKey = JSON.stringify(selectedChoices.map(c => c.name).sort());
+            const uniqueId = `${product.id}-${optionsKey}`;
+
+            const existing = prevCart.find((item) => item.uniqueId === uniqueId);
+
+            // Calculate extra price from choices
+            const extraPrice = selectedChoices.reduce((sum, c) => sum + parseFloat(c.price || 0), 0);
+            const itemPrice = parseFloat(product.price) + extraPrice;
 
             if (existing) {
                 return prevCart.map((item) =>
-                    item.id === product.id
+                    item.uniqueId === uniqueId
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
             }
 
-            return [...prevCart, { ...product, quantity: 1 }];
+            return [
+                ...prevCart,
+                {
+                    ...product,
+                    uniqueId,
+                    selectedChoices,
+                    finalPrice: itemPrice,
+                    quantity: 1
+                }
+            ];
         });
     };
 
     // Increase quantity
-    const increaseQty = (id) => {
+    const increaseQty = (uniqueId) => {
         setCart((prevCart) =>
             prevCart.map((item) =>
-                item.id === id
+                item.uniqueId === uniqueId
                     ? { ...item, quantity: item.quantity + 1 }
                     : item
             )
@@ -35,11 +52,11 @@ export const CartProvider = ({ children }) => {
     };
 
     // Decrease quantity
-    const decreaseQty = (id) => {
+    const decreaseQty = (uniqueId) => {
         setCart((prevCart) =>
             prevCart
                 .map((item) =>
-                    item.id === id
+                    item.uniqueId === uniqueId
                         ? { ...item, quantity: item.quantity - 1 }
                         : item
                 )
@@ -52,7 +69,7 @@ export const CartProvider = ({ children }) => {
 
     // Total calculation
     const total = cart.reduce(
-        (sum, item) => sum + item.price * item.quantity,
+        (sum, item) => sum + item.finalPrice * item.quantity,
         0
     );
 

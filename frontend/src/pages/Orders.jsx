@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getOrders } from "../services/orderService";
+import { ListOrdered } from "lucide-react";
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -27,31 +28,34 @@ const Orders = () => {
 
     return (
         <div className="bg-white p-6 rounded-xl shadow h-full overflow-auto">
-            <h2 className="text-2xl font-bold mb-6">Completed Orders</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Completed Orders</h2>
 
             {orders.length === 0 && <p className="text-gray-400">No completed orders yet.</p>}
 
             <div className="space-y-4">
                 {orders.map((order) => (
-                    <div key={order.id} className="border rounded-lg p-4 flex justify-between items-start">
-                        <div>
-                            <p className="font-semibold">Order #{order.id}</p>
-                            <p className="text-sm text-gray-500">
-                                {new Date(order.created_at).toLocaleString()}
-                            </p>
-                            <p className="text-sm">Payment: {order.payment_method}</p>
-                            <div className="mt-2">
-                                <p className="text-sm font-medium">Items:</p>
-                                <ul className="text-sm text-gray-600 list-disc list-inside">
+                    <div key={order.id} className="border border-gray-100 rounded-2xl p-5 flex justify-between items-start hover:shadow-md transition-shadow bg-white">
+                        <div className="flex gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+                                <ListOrdered size={24} />
+                            </div>
+                            <div>
+                                <p className="font-bold text-gray-900">Order #{order.id}</p>
+                                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
+                                    {new Date(order.created_at).toLocaleString()}
+                                </p>
+                                <div className="mt-4 flex flex-wrap gap-2">
                                     {order.items && order.items.map((item, index) => (
-                                        <li key={index}>
-                                            {item.name} x {item.quantity}
-                                        </li>
+                                        <span key={index} className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-semibold border border-gray-200">
+                                            {item.name} <span className="text-brand-primary">x{item.quantity}</span>
+                                        </span>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
                         </div>
-                        <div className="text-lg font-bold">${order.total}</div>
+                        <div className="text-xl font-black text-primary bg-primary/5 px-4 py-2 rounded-xl border border-primary/10 font-mono-numbers">
+                            ${order.total}
+                        </div>
                     </div>
                 ))}
             </div>

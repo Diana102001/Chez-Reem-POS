@@ -9,9 +9,13 @@ const Navbar = () => {
             case "/":
                 return "Dashboard";
             case "/orders":
-                return "Orders";
+                return "All Orders";
+            case "/order":
+                return "Order";
             case "/products":
                 return "Products";
+            case "/categories":
+                return "Categories";
             default:
                 return "POS System";
         }
@@ -28,8 +32,8 @@ const Navbar = () => {
             <div className="flex items-center gap-4">
                 <span className="text-gray-600">Admin</span>
 
-                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center">
-                    A
+                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-xs shadow-lg shadow-primary/20">
+                    AD
                 </div>
             </div>
         </div>

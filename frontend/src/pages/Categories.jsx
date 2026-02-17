@@ -77,10 +77,10 @@ const Categories = () => {
     return (
         <div className="bg-white p-6 rounded-xl shadow h-full flex flex-col">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Categories</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Categories</h2>
                 <button
                     onClick={handleAddClick}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
                     Add Category
                 </button>
@@ -97,7 +97,7 @@ const Categories = () => {
                     <tbody>
                         {categories.map((category) => (
                             <tr key={category.id} className="border-b hover:bg-gray-50">
-                                <td className="py-3 px-4">{category.name}</td>
+                                <td className="py-3 px-4 font-medium text-foreground">{category.name}</td>
                                 <td className="py-3 px-4 text-right space-x-2">
                                     <button
                                         onClick={() => handleEditClick(category)}
