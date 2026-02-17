@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getProducts } from "../services/productService";
 import { getOrders } from "../services/orderService";
 import { LayoutDashboard, ShoppingCart, Package, ListOrdered, UtensilsCrossed } from "lucide-react";
+import Loader from "../components/common/Loader";
 
 const Dashboard = () => {
     const [stats, setStats] = useState({
@@ -39,10 +40,10 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    if (loading) return <div className="p-6">Loading dashboard...</div>;
+    if (loading) return <Loader text="Analyzing POS Data" />;
 
     return (
-        <div className="space-y-6">
+        <div className="h-full overflow-y-auto pr-2 space-y-6">
             <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
 
             {/* Stats Grid */}
@@ -51,7 +52,7 @@ const Dashboard = () => {
                     <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
                     <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest">Total Revenue</h3>
                     <p className="text-3xl font-black text-gray-900 mt-2">
-                        ${stats.totalSales.toFixed(2)}
+                        {stats.totalSales.toFixed(2)}€
                     </p>
                     <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform duration-500">
                         <ShoppingCart size={80} className="text-primary" />

@@ -1,13 +1,14 @@
 import { useState, useContext } from "react";
-// import API from "../api"; // Not needed directly anymore
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/common/Loader";
 
 export default function Login() {
     const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { login } = useContext(AuthContext);
     const [error, setError] = useState(null);
@@ -15,13 +16,22 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError(null);
-        const result = await login(username, password);
-        if (result.success) {
-            navigate("/");
-        } else {
-            setError(result.message || "Invalid credentials");
+        setIsSubmitting(true);
+        try {
+            const result = await login(username, password);
+            if (result.success) {
+                navigate("/");
+            } else {
+                setError(result.message || "Invalid credentials");
+                setIsSubmitting(false);
+            }
+        } catch (err) {
+            setError("An unexpected error occurred");
+            setIsSubmitting(false);
         }
     };
+
+    if (isSubmitting) return <Loader fullScreen text="Welcome back" />;
 
     return (
         <div className="h-screen flex items-center justify-center bg-gray-100">

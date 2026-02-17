@@ -7,6 +7,7 @@ import {
     deleteProduct,
 } from "../services/productService";
 import ProductModal from "../components/products/ProductModal";
+import Loader from "../components/common/Loader";
 
 const Products = () => {
     const [products, setProducts] = useState([]);
@@ -15,6 +16,11 @@ const Products = () => {
     const [currentProduct, setCurrentProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState("All");
+
+    const filteredProducts = selectedCategoryId === "All"
+        ? products
+        : products.filter(p => String(p.category) === String(selectedCategoryId));
 
     useEffect(() => {
         loadData();
@@ -82,19 +88,33 @@ const Products = () => {
         return category ? category.name : "Unknown";
     };
 
-    if (loading) return <div className="p-6 text-center">Loading products...</div>;
+    if (loading) return <Loader text="Loading Products" />;
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
     return (
         <div className="bg-white p-6 rounded-xl shadow h-full flex flex-col">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Products</h2>
-                <button
-                    onClick={handleAddClick}
-                    className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
-                >
-                    Add Product
-                </button>
+                <div className="flex items-center gap-4">
+                    <select
+                        value={selectedCategoryId}
+                        onChange={(e) => setSelectedCategoryId(e.target.value)}
+                        className="px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700 outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer min-w-[160px]"
+                    >
+                        <option value="All">All Categories</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                    <button
+                        onClick={handleAddClick}
+                        className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                    >
+                        Add Product
+                    </button>
+                </div>
             </div>
 
             <div className="flex-1 overflow-auto">
@@ -102,14 +122,14 @@ const Products = () => {
                     <thead>
                         <tr className="border-b">
                             <th className="py-3 px-4 font-semibold text-gray-700">Name</th>
-                            <th className="py-3 px-4 font-semibold text-gray-700">Category</th>
+                            {selectedCategoryId === "All" && <th className="py-3 px-4 font-semibold text-gray-700">Category</th>}
                             <th className="py-3 px-4 font-semibold text-gray-700">Quantity</th>
                             <th className="py-3 px-4 font-semibold text-gray-700">Price</th>
                             <th className="py-3 px-4 font-semibold text-gray-700 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product) => (
+                        {filteredProducts.map((product) => (
                             <tr key={product.id} className="border-b hover:bg-gray-50">
                                 <td className="py-4 px-4">
                                     <p className="font-bold text-gray-900">{product.name}</p>
@@ -119,23 +139,25 @@ const Products = () => {
                                         </p>
                                     )}
                                 </td>
-                                <td className="py-4 px-4">
-                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-secondary/10 text-secondary uppercase tracking-wider">
-                                        {getCategoryName(product.category)}
-                                    </span>
-                                </td>
+                                {selectedCategoryId === "All" && (
+                                    <td className="py-4 px-4">
+                                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-secondary/10 text-secondary uppercase tracking-wider">
+                                            {getCategoryName(product.category)}
+                                        </span>
+                                    </td>
+                                )}
                                 <td className="py-3 px-4 font-mono-numbers">{product.quantity}</td>
-                                <td className="py-3 px-4 font-mono-numbers">${product.price}</td>
+                                <td className="py-3 px-4 font-mono-numbers">{product.price}€</td>
                                 <td className="py-3 px-4 text-right space-x-2">
                                     <button
                                         onClick={() => handleEditClick(product)}
-                                        className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition text-sm"
+                                        className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors text-sm font-bold shadow-sm"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDeleteClick(product.id)}
-                                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+                                        className="px-3 py-1 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-colors text-sm font-bold shadow-sm"
                                     >
                                         Delete
                                     </button>
@@ -144,9 +166,9 @@ const Products = () => {
                         ))}
                     </tbody>
                 </table>
-                {products.length === 0 && (
-                    <div className="text-center py-10 text-gray-500">
-                        No products found. Click "Add Product" to create one.
+                {filteredProducts.length === 0 && (
+                    <div className="text-center py-10 text-gray-400 font-bold">
+                        No products found in this category.
                     </div>
                 )}
             </div>

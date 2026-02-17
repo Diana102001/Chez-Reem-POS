@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useCart } from "../../context/CartContext";
-import { saveOrder } from "../../services/orderService";
+import { saveOrder, updateOrder } from "../../services/orderService";
 import { X } from "lucide-react";
 
-const PaymentModal = ({ isOpen, onClose }) => {
+const PaymentModal = ({ isOpen, onClose, orderId }) => {
     const { cart, total, clearCart } = useCart();
     const [method, setMethod] = useState("Cash");
     const [loading, setLoading] = useState(false);
@@ -16,14 +16,19 @@ const PaymentModal = ({ isOpen, onClose }) => {
         const orderData = {
             items: cart.map(item => ({
                 product: item.id,
-                quantity: item.quantity
+                quantity: item.quantity,
+                choices: item.selectedChoices
             })),
             total: total,
             payment_method: method
         };
 
         try {
-            await saveOrder(orderData);
+            if (orderId) {
+                await updateOrder(orderId, orderData);
+            } else {
+                await saveOrder(orderData);
+            }
             clearCart();
             alert(`Order completed successfully!`);
             onClose();
@@ -40,7 +45,7 @@ const PaymentModal = ({ isOpen, onClose }) => {
             <div className="bg-white w-[400px] p-8 rounded-3xl shadow-2xl border border-border relative overflow-hidden">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-bold text-foreground">Complete Payment</h2>
+                    <h2 className="text-xl font-bold text-foreground">Complete Payment</h2>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground"
@@ -51,23 +56,23 @@ const PaymentModal = ({ isOpen, onClose }) => {
 
                 {/* Amount Display */}
                 <div className="mb-8 p-6 bg-secondary/5 rounded-2xl border border-secondary/10 text-center">
-                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-2">Total Amount</p>
-                    <p className="text-4xl font-black text-secondary font-mono-numbers">
-                        ${total.toFixed(2)}
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Total Amount</p>
+                    <p className="text-3xl font-black text-secondary font-mono-numbers">
+                        {total.toFixed(2)}€
                     </p>
                 </div>
 
                 {/* Method Selection */}
                 <div className="mb-8">
-                    <p className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Select Payment Method</p>
+                    <p className="text-xs font-bold text-foreground mb-4 uppercase tracking-wider">Select Payment Method</p>
                     <div className="flex gap-4">
                         {["Cash", "Card"].map((type) => (
                             <button
                                 key={type}
                                 onClick={() => setMethod(type)}
                                 className={`flex-1 py-4 rounded-2xl font-bold transition-all duration-200 border-2 ${method === type
-                                        ? "border-secondary bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20"
-                                        : "border-border bg-white text-muted-foreground hover:border-secondary/30 hover:text-secondary"
+                                    ? "border-secondary bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20"
+                                    : "border-border bg-white text-muted-foreground hover:border-secondary/30 hover:text-secondary"
                                     }`}
                             >
                                 {type}
@@ -83,7 +88,7 @@ const PaymentModal = ({ isOpen, onClose }) => {
                         disabled={loading}
                         className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary/20"
                     >
-                        {loading ? "Processing..." : `Pay $${total.toFixed(2)}`}
+                        {loading ? "Processing..." : `Pay ${total.toFixed(2)}€`}
                     </button>
                     <button
                         onClick={onClose}

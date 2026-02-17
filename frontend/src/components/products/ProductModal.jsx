@@ -112,10 +112,10 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                             {product ? <Pencil className="w-5 h-5" /> : <Package className="w-5 h-5" />}
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-foreground">
+                            <h2 className="text-lg font-bold text-foreground">
                                 {product ? "Edit Product" : "Add New Product"}
                             </h2>
-                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">
+                            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
                                 {product ? `Editing: ${product.name}` : "Product Details"}
                             </p>
                         </div>
@@ -145,7 +145,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                     onChange={handleChange}
                                     placeholder="Product Name"
                                     required
-                                    className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-sm focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold"
+                                    className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold"
                                 />
                             </div>
 
@@ -157,7 +157,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                         value={formData.category}
                                         onChange={handleChange}
                                         required
-                                        className="block w-full rounded-2xl border-border bg-gray-50/50 p-3.5 text-sm focus:border-secondary transition-all border outline-none font-bold"
+                                        className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold appearance-none"
                                     >
                                         <option value="" disabled>Select category</option>
                                         {categories.map((cat) => (
@@ -172,9 +172,10 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                         name="price"
                                         value={formData.price}
                                         onChange={handleChange}
+                                        placeholder="0.00"
                                         required
                                         step="0.01"
-                                        className="block w-full rounded-2xl border-border bg-gray-50/50 p-3.5 text-sm focus:border-secondary transition-all border outline-none font-mono-numbers font-bold"
+                                        className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold font-mono-numbers"
                                     />
                                 </div>
                             </div>

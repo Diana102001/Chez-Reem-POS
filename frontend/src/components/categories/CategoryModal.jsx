@@ -3,14 +3,17 @@ import { X, Layers, Tag, Pencil } from "lucide-react";
 
 const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
     const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
     const [options, setOptions] = useState([]); // [{ name: "", price_change: 0 }]
 
     useEffect(() => {
         if (category) {
             setName(category.name);
+            setDescription(category.description || "");
             setOptions(category.options || []);
         } else {
             setName("");
+            setDescription("");
             setOptions([]);
         }
     }, [category, isOpen]);
@@ -31,7 +34,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave({ name, options });
+        onSave({ name, description, options });
     };
 
     if (!isOpen) return null;
@@ -46,10 +49,10 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                             {category ? <Pencil className="w-5 h-5" /> : <Layers className="w-5 h-5" />}
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-foreground">
+                            <h2 className="text-lg font-bold text-foreground">
                                 {category ? "Edit Category" : "Add Category"}
                             </h2>
-                            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">
+                            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
                                 {category ? "Update existing" : "Create new"}
                             </p>
                         </div>
@@ -69,14 +72,23 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                             <Tag className="w-3.5 h-3.5" />
                             General Information
                         </label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g. Beverages, Main Course"
-                            required
-                            className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-sm focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold"
-                        />
+                        <div className="space-y-4">
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Category Name (e.g. Beverages)"
+                                required
+                                className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold"
+                            />
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Category Description (optional)"
+                                rows="2"
+                                className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-medium resize-none"
+                            />
+                        </div>
                     </div>
 
                     {/* Category-wide Options */}
@@ -114,7 +126,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                                             step="0.01"
                                             className="w-full bg-gray-50/50 border border-border rounded-xl p-3 text-sm font-mono-numbers focus:border-secondary outline-none font-bold pr-5"
                                         />
-                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">$</span>
+                                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">€</span>
                                     </div>
                                     <button
                                         type="button"

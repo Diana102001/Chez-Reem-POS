@@ -22,7 +22,7 @@ const Navbar = () => {
     };
 
     return (
-        <div className="h-16 bg-white shadow-sm flex items-center justify-between px-6 border-b">
+        <div className="h-20 bg-white shadow-sm flex items-center justify-between px-6 border-b">
             {/* Page Title */}
             <h2 className="text-lg font-semibold text-gray-800">
                 {getPageTitle()}

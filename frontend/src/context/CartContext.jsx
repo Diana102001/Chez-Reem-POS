@@ -67,6 +67,27 @@ export const CartProvider = ({ children }) => {
     // Clear cart
     const clearCart = () => setCart([]);
 
+    // Load existing order into cart
+    const loadCart = (items) => {
+        const mappedItems = items.map(item => {
+            // Reconstruct uniqueId
+            const selectedChoices = item.choices || [];
+            const optionsKey = JSON.stringify(selectedChoices.map(c => c.name).sort());
+            const uniqueId = `${item.product}-${optionsKey}`;
+
+            return {
+                id: item.product,
+                name: item.name || "Product", // Fallback if name not passed
+                uniqueId,
+                selectedChoices,
+                finalPrice: parseFloat(item.price),
+                quantity: item.quantity,
+                price: parseFloat(item.price) - selectedChoices.reduce((sum, c) => sum + parseFloat(c.price || 0), 0)
+            };
+        });
+        setCart(mappedItems);
+    };
+
     // Total calculation
     const total = cart.reduce(
         (sum, item) => sum + item.finalPrice * item.quantity,
@@ -81,6 +102,7 @@ export const CartProvider = ({ children }) => {
                 increaseQty,
                 decreaseQty,
                 clearCart,
+                loadCart,
                 total,
             }}
         >

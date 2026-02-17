@@ -25,25 +25,25 @@ const Sidebar = () => {
 
     return (
         <div
-            className={`flex flex-col h-screen bg-white border-r border-border shadow-sm transition-all duration-300 ease-in-out z-50 overflow-x-hidden flex-shrink-0 ${isExpanded ? 'w-64' : 'w-20'}`}
+            className={`flex flex-col h-screen bg-white border-r border-border shadow-sm transition-all duration-300 ease-in-out z-50 overflow-x-hidden flex-shrink-0 ${isExpanded ? 'w-56' : 'w-16'}`}
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
         >
             {/* Logo Section */}
-            <div className="h-20 flex items-center px-6 border-b border-border overflow-hidden">
-                <div className="flex items-center gap-4 min-w-max">
+            <div className="h-20 flex items-center px-3 border-b border-border overflow-hidden">
+                <div className="flex items-center gap-3 min-w-max">
                     <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
                         <UtensilsCrossed className="text-primary-foreground w-6 h-6" />
                     </div>
                     <div className={`transition-all duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 invisible w-0'}`}>
-                        <h1 className="text-lg font-bold text-foreground tracking-tight leading-none whitespace-nowrap">Chez Reem</h1>
-                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">POS System</p>
+                        <h1 className="text-base font-bold text-foreground tracking-tight leading-none whitespace-nowrap">Chez Reem</h1>
+                        <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">POS System</p>
                     </div>
                 </div>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto overflow-x-hidden font-sans">
+            <nav className="flex-1 px-2.5 py-6 space-y-1.5 overflow-y-auto overflow-x-hidden font-sans">
                 <p className={`px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4 transition-all duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 h-0 pointer-events-none'}`}>
                     Main Menu
                 </p>
@@ -53,7 +53,7 @@ const Sidebar = () => {
                         to={item.path}
                         end={item.path === "/"}
                         className={({ isActive }) =>
-                            `flex items-center rounded-xl transition-all duration-200 group relative ${isExpanded ? 'px-4 py-3 gap-4' : 'justify-center p-3'
+                            `flex items-center rounded-xl transition-all duration-200 group relative ${isExpanded ? 'px-3 py-2.5 gap-3' : 'justify-center p-2.5'
                             } ${isActive
                                 ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -76,8 +76,8 @@ const Sidebar = () => {
             </nav>
 
             {/* User Profile & Logout */}
-            <div className="p-4 border-t border-border bg-gray-50/50">
-                <div className={`flex items-center transition-all duration-300 mb-4 ${isExpanded ? 'px-2 gap-3' : 'justify-center'}`}>
+            <div className="p-3 border-t border-border bg-gray-50/50">
+                <div className={`flex items-center transition-all duration-300 mb-4 ${isExpanded ? 'px-1 gap-3' : 'justify-center'}`}>
                     <div className="w-10 h-10 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary font-bold text-sm flex-shrink-0 shadow-sm">
                         AD
                     </div>
@@ -88,7 +88,7 @@ const Sidebar = () => {
                 </div>
                 <button
                     onClick={logout}
-                    className={`flex items-center justify-center transition-all duration-300 rounded-xl border border-destructive/20 text-destructive hover:bg-destructive hover:text-white group relative ${isExpanded ? 'w-full py-3 px-4 gap-2' : 'w-10 h-10 mx-auto'
+                    className={`flex items-center justify-center transition-all duration-300 rounded-xl border border-destructive/20 text-destructive hover:bg-destructive hover:text-white group relative ${isExpanded ? 'w-full py-2.5 px-3 gap-2' : 'w-10 h-10 mx-auto'
                         }`}
                 >
                     <LogOut className={`flex-shrink-0 ${isExpanded ? 'w-4 h-4' : 'w-5 h-5'}`} />

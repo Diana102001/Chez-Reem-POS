@@ -13,7 +13,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'options']
+        fields = ['id', 'name', 'description', 'options']
 
     def create(self, validated_data):
         options_data = validated_data.pop('options', [])
@@ -26,6 +26,7 @@ class CategorySerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         options_data = validated_data.pop('options', None)
         instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
         instance.save()
 
         if options_data is not None:

@@ -6,6 +6,7 @@ import {
     deleteCategory,
 } from "../services/productService";
 import CategoryModal from "../components/categories/CategoryModal";
+import Loader from "../components/common/Loader";
 
 const Categories = () => {
     const [categories, setCategories] = useState([]);
@@ -71,7 +72,7 @@ const Categories = () => {
         }
     };
 
-    if (loading) return <div className="p-6 text-center">Loading categories...</div>;
+    if (loading) return <Loader text="Loading Categories" />;
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
     return (
@@ -90,24 +91,31 @@ const Categories = () => {
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="border-b">
-                            <th className="py-3 px-4 font-semibold text-gray-700">Name</th>
+                            <th className="py-3 px-4 font-semibold text-gray-700">Category</th>
                             <th className="py-3 px-4 font-semibold text-gray-700 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {categories.map((category) => (
                             <tr key={category.id} className="border-b hover:bg-gray-50">
-                                <td className="py-3 px-4 font-medium text-foreground">{category.name}</td>
+                                <td className="py-3 px-4">
+                                    <p className="font-bold text-foreground text-sm">{category.name}</p>
+                                    {category.description && (
+                                        <p className="text-[10px] text-muted-foreground font-medium mt-0.5 line-clamp-1 italic max-w-[400px]">
+                                            {category.description}
+                                        </p>
+                                    )}
+                                </td>
                                 <td className="py-3 px-4 text-right space-x-2">
                                     <button
                                         onClick={() => handleEditClick(category)}
-                                        className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 transition text-sm"
+                                        className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors text-sm font-bold shadow-sm"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDeleteClick(category.id)}
-                                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+                                        className="px-3 py-1 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-colors text-sm font-bold shadow-sm"
                                     >
                                         Delete
                                     </button>

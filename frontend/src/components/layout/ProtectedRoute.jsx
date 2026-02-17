@@ -1,12 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
+import Loader from '../common/Loader';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loader text="Authenticating Session" />;
     }
 
     if (!user) {
