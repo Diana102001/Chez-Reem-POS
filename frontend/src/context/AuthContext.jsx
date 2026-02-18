@@ -22,7 +22,8 @@ export const AuthProvider = ({ children }) => {
             return { success: true };
         } catch (error) {
             console.error("Login failed", error);
-            return { success: false, message: "Invalid credentials" };
+            const message = error.response?.data?.detail || error.response?.data?.message || "Invalid credentials or connection error";
+            return { success: false, message: message };
         }
     };
 

@@ -1,11 +1,9 @@
 import api from './api';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/';
-
 export const login = async (username, password) => {
-    // Login directly with axios to avoid interceptor issues, but use the base URL
-    const response = await axios.post(`${API_URL}token/`, {
+    // Login with the api instance to use common base URL and headers
+    const response = await api.post('token/', {
         username,
         password
     });
