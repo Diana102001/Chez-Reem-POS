@@ -5,7 +5,7 @@ import Navbar from "../components/layout/Navbar";
 
 const MainLayout = () => {
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex h-screen bg-background">
             {/* Sidebar */}
             <Sidebar />
 

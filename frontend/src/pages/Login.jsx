@@ -34,12 +34,12 @@ export default function Login() {
     if (isSubmitting) return <Loader fullScreen text="Welcome back" />;
 
     return (
-        <div className="h-screen flex items-center justify-center bg-gray-100">
+        <div className="h-screen flex items-center justify-center bg-background">
             <form
                 onSubmit={handleLogin}
-                className="bg-white p-8 rounded-2xl shadow-xl w-96"
+                className="bg-card p-8 rounded-2xl shadow-xl w-96"
             >
-                <h2 className="text-2xl font-bold mb-6 text-center">
+                <h2 className="text-2xl font-bold mb-6 text-center text-foreground">
                     Restaurant POS Login
                 </h2>
 
@@ -52,7 +52,7 @@ export default function Login() {
                 <input
                     type="text"
                     placeholder="Username"
-                    className="w-full p-3 mb-4 border rounded-lg"
+                    className="w-full p-3 mb-4 border border-border rounded-lg bg-muted/50 text-foreground"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
@@ -60,7 +60,7 @@ export default function Login() {
                 <input
                     type="password"
                     placeholder="Password"
-                    className="w-full p-3 mb-6 border rounded-lg"
+                    className="w-full p-3 mb-6 border border-border rounded-lg bg-muted/50 text-foreground"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

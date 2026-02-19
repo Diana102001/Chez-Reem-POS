@@ -59,8 +59,8 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
 
     return (
         <>
-            <div className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300">
-                <div className="bg-white w-[400px] p-8 rounded-3xl shadow-2xl border border-border relative overflow-hidden">
+            <div className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300" onClick={onClose}>
+                <div className="bg-card w-[400px] p-8 rounded-3xl shadow-2xl border border-border relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-xl font-bold text-foreground">Complete Payment</h2>
@@ -90,7 +90,7 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
                                     onClick={() => setMethod(type)}
                                     className={`flex-1 py-4 rounded-2xl font-bold transition-all duration-200 border-2 ${method === type
                                         ? "border-secondary bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20"
-                                        : "border-border bg-white text-muted-foreground hover:border-secondary/30 hover:text-secondary"
+                                        : "border-border bg-card text-muted-foreground hover:border-secondary/30 hover:text-secondary"
                                         }`}
                                 >
                                     {type}

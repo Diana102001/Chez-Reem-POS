@@ -72,10 +72,10 @@ const Orders = () => {
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow h-full flex flex-col h-screen overflow-hidden">
+        <div className="bg-card p-6 rounded-xl shadow h-full flex flex-col h-screen overflow-hidden">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">All Orders</h2>
-                <div className="flex gap-2 bg-gray-50 p-1.5 rounded-xl border border-gray-100">
+                <h2 className="text-2xl font-bold text-foreground">All Orders</h2>
+                <div className="flex gap-2 bg-muted p-1.5 rounded-xl border border-border">
                     {[
                         { id: 'active', label: 'Active' },
                         { id: 'paid', label: 'Paid' },
@@ -87,8 +87,8 @@ const Orders = () => {
                             onClick={() => setFilter(tab.id)}
                             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all
                                 ${filter === tab.id
-                                    ? "bg-white text-primary shadow-sm ring-1 ring-black/5"
-                                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50"
+                                    ? "bg-card text-primary shadow-sm ring-1 ring-border"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                 }`}
                         >
                             {tab.label}
@@ -97,7 +97,7 @@ const Orders = () => {
                 </div>
             </div>
 
-            {filteredOrders.length === 0 && <p className="text-gray-400 py-10 text-center font-bold">No {filter} orders found.</p>}
+            {filteredOrders.length === 0 && <p className="text-muted-foreground py-10 text-center font-bold">No {filter} orders found.</p>}
 
             <div className="flex-1 overflow-auto space-y-4 pr-2">
                 {filteredOrders.map((order) => {
@@ -105,23 +105,23 @@ const Orders = () => {
                     const StatusIcon = status.icon;
 
                     return (
-                        <div key={order.id} className="border border-gray-100 rounded-2xl p-5 flex justify-between items-center hover:shadow-md transition-shadow bg-white">
+                        <div key={order.id} className="border border-border rounded-2xl p-5 flex justify-between items-center hover:shadow-md transition-shadow bg-card">
                             <div className="flex gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400">
+                                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center text-muted-foreground">
                                     <ListOrdered size={24} />
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-3 mb-1">
-                                        <p className="font-bold text-gray-900">Order #{order.id}</p>
+                                        <p className="font-bold text-foreground">Order #{order.id}</p>
                                         <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${status.color}`}>
                                             <StatusIcon size={12} />
                                             {status.label}
                                         </span>
                                     </div>
-                                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
+                                    <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-tighter">
                                         {new Date(order.created_at).toLocaleString()}
                                     </p>
-                                    <p className="mt-2 text-[11px] font-bold text-gray-500 uppercase tracking-tight line-clamp-1 max-w-[400px]">
+                                    <p className="mt-2 text-[11px] font-bold text-muted-foreground uppercase tracking-tight line-clamp-1 max-w-[400px]">
                                         {order.items && order.items.map(item => item.product_name || item.name || "Product").join(", ")}
                                     </p>
                                 </div>

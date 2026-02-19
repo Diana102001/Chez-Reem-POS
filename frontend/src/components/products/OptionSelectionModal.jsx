@@ -49,10 +49,10 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
     };
 
     return (
-        <div className="fixed inset-0 bg-foreground/20 flex items-center justify-center z-[60] backdrop-blur-md transition-all duration-300">
-            <div className="bg-white w-[440px] max-h-[85vh] flex flex-col rounded-3xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-foreground/20 flex items-center justify-center z-[60] backdrop-blur-md transition-all duration-300" onClick={onClose}>
+            <div className="bg-card w-[440px] max-h-[85vh] flex flex-col rounded-3xl shadow-2xl border border-border overflow-hidden animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="p-4 border-b border-border flex justify-between items-start bg-gray-50/50">
+                <div className="p-4 border-b border-border flex justify-between items-start bg-muted/50">
                     <div>
                         <div className="flex items-center gap-2 mb-0.5">
                             <h2 className="text-base font-bold text-foreground">{product.name}</h2>
@@ -99,7 +99,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                                             className={`p-2.5 rounded-xl border-2 transition-all text-left flex justify-between items-center group
                                                 ${isSelected
                                                     ? "border-[#808c49] bg-[#808c49]/5 ring-4 ring-[#808c49]/10"
-                                                    : "border-border hover:border-[#808c49]/30 bg-white"
+                                                    : "border-border hover:border-[#808c49]/30 bg-card"
                                                 }`}
                                         >
                                             <div>
@@ -141,7 +141,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                                             className={`p-2.5 rounded-xl border-2 transition-all text-left flex justify-between items-center group
                                                 ${isSelected
                                                     ? "border-secondary bg-secondary/5 ring-4 ring-secondary/10"
-                                                    : "border-border hover:border-secondary/30 bg-white"
+                                                    : "border-border hover:border-secondary/30 bg-card"
                                                 }`}
                                         >
                                             <div>
@@ -172,7 +172,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 bg-gray-50 border-t border-border mt-auto">
+                <div className="p-4 bg-muted border-t border-border mt-auto">
                     <div className="flex justify-between items-end mb-4">
                         <div>
                             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Total Price</p>
@@ -181,7 +181,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                             </p>
                         </div>
                         <div className="text-right">
-                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest bg-white px-2 py-0.5 rounded-full border border-border inline-block">
+                            <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest bg-card px-2 py-0.5 rounded-full border border-border inline-block">
                                 {selectedChoices.length} customization(s)
                             </p>
                         </div>

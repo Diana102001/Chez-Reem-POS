@@ -26,7 +26,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from products.views import CategoryViewSet, ProductViewSet
-from orders.views import OrderViewSet, OrderItemViewSet
+from orders.views import OrderViewSet, OrderItemViewSet, dashboard_stats
 from payments.views import PaymentViewSet
 from users.views import UserViewSet
 
@@ -46,6 +46,8 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('api/dashboard-stats/', dashboard_stats, name='dashboard-stats'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+

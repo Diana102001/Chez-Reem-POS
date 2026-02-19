@@ -103,10 +103,10 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300">
-            <div className="bg-white w-[600px] max-h-[90vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl border border-border relative">
+        <div className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300" onClick={onClose}>
+            <div className="bg-card w-[600px] max-h-[90vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl border border-border relative" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="p-6 border-b border-border flex justify-between items-center bg-gray-50/50">
+                <div className="p-6 border-b border-border flex justify-between items-center bg-muted/50">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
                             {product ? <Pencil className="w-5 h-5" /> : <Package className="w-5 h-5" />}
@@ -145,7 +145,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                     onChange={handleChange}
                                     placeholder="Product Name"
                                     required
-                                    className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold"
+                                    className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold text-foreground"
                                 />
                             </div>
 
@@ -157,7 +157,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                         value={formData.category}
                                         onChange={handleChange}
                                         required
-                                        className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold appearance-none"
+                                        className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold appearance-none text-foreground"
                                     >
                                         <option value="" disabled>Select category</option>
                                         {categories.map((cat) => (
@@ -175,7 +175,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                         placeholder="0.00"
                                         required
                                         step="0.01"
-                                        className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold font-mono-numbers"
+                                        className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold font-mono-numbers text-foreground"
                                     />
                                 </div>
                             </div>
@@ -200,7 +200,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
 
                             <div className="space-y-6">
                                 {formData.options.map((group, groupIdx) => (
-                                    <div key={groupIdx} className="p-4 bg-gray-50/50 border border-border rounded-2xl relative group/card">
+                                    <div key={groupIdx} className="p-4 bg-muted/50 border border-border rounded-2xl relative group/card">
                                         <button
                                             type="button"
                                             onClick={() => removeOptionGroup(groupIdx)}
@@ -228,14 +228,14 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                                         placeholder="Choice name"
                                                         value={choice.name}
                                                         onChange={(e) => updateChoice(groupIdx, choiceIdx, "name", e.target.value)}
-                                                        className="flex-1 bg-white border border-border rounded-xl p-2 text-xs focus:border-secondary outline-none"
+                                                        className="flex-1 bg-card border border-border rounded-xl p-2 text-xs focus:border-secondary outline-none text-foreground"
                                                     />
                                                     <input
                                                         type="number"
                                                         placeholder="Price"
                                                         value={choice.price}
                                                         onChange={(e) => updateChoice(groupIdx, choiceIdx, "price", e.target.value)}
-                                                        className="w-24 bg-white border border-border rounded-xl p-2 text-xs font-mono-numbers focus:border-secondary outline-none"
+                                                        className="w-24 bg-card border border-border rounded-xl p-2 text-xs font-mono-numbers focus:border-secondary outline-none text-foreground"
                                                     />
                                                     <button
                                                         type="button"
@@ -274,7 +274,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                     name="quantity"
                                     value={formData.quantity}
                                     onChange={handleChange}
-                                    className="block w-full rounded-2xl border-border bg-gray-50/50 p-3.5 text-sm focus:border-secondary border outline-none font-mono-numbers"
+                                    className="block w-full rounded-2xl border-border bg-muted/50 p-3.5 text-sm focus:border-secondary border outline-none font-mono-numbers text-foreground"
                                 />
                             </div>
                             <div className="col-span-1">
@@ -284,7 +284,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                     name="details"
                                     value={formData.details}
                                     onChange={handleChange}
-                                    className="block w-full rounded-2xl border-border bg-gray-50/50 p-3.5 text-sm focus:border-secondary border outline-none font-medium"
+                                    className="block w-full rounded-2xl border-border bg-muted/50 p-3.5 text-sm focus:border-secondary border outline-none font-medium text-foreground"
                                 />
                             </div>
 
@@ -296,7 +296,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                                     onChange={handleChange}
                                     rows="3"
                                     placeholder="Detailed description of the product..."
-                                    className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-sm focus:border-secondary transition-all border outline-none font-medium resize-none"
+                                    className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-sm focus:border-secondary transition-all border outline-none font-medium resize-none text-foreground"
                                 />
                             </div>
                         </div>

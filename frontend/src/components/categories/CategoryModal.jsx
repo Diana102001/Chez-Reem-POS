@@ -40,10 +40,10 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300">
-            <div className="bg-white w-[500px] max-h-[90vh] flex flex-col rounded-3xl shadow-2xl border border-border relative overflow-hidden">
+        <div className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300" onClick={onClose}>
+            <div className="bg-card w-[500px] max-h-[90vh] flex flex-col rounded-3xl shadow-2xl border border-border relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
-                <div className="p-6 border-b border-border flex justify-between items-center bg-gray-50/50">
+                <div className="p-6 border-b border-border flex justify-between items-center bg-muted/50">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center text-secondary">
                             {category ? <Pencil className="w-5 h-5" /> : <Layers className="w-5 h-5" />}
@@ -79,14 +79,14 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="Category Name (e.g. Beverages)"
                                 required
-                                className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold"
+                                className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold text-foreground"
                             />
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 placeholder="Category Description (optional)"
                                 rows="2"
-                                className="block w-full rounded-2xl border-border bg-gray-50/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-medium resize-none"
+                                className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-medium resize-none text-foreground"
                             />
                         </div>
                     </div>
@@ -115,7 +115,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                                         placeholder="Add-on name"
                                         value={option.name}
                                         onChange={(e) => updateOption(idx, "name", e.target.value)}
-                                        className="flex-1 bg-gray-50/50 border border-border rounded-xl p-3 text-sm focus:border-secondary outline-none font-medium"
+                                        className="flex-1 bg-muted/50 border border-border rounded-xl p-3 text-sm focus:border-secondary outline-none font-medium text-foreground"
                                     />
                                     <div className="relative w-24">
                                         <input
@@ -124,7 +124,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                                             value={option.price_change}
                                             onChange={(e) => updateOption(idx, "price_change", e.target.value)}
                                             step="0.01"
-                                            className="w-full bg-gray-50/50 border border-border rounded-xl p-3 text-sm font-mono-numbers focus:border-secondary outline-none font-bold pr-5"
+                                            className="w-full bg-muted/50 border border-border rounded-xl p-3 text-sm font-mono-numbers focus:border-secondary outline-none font-bold pr-5 text-foreground"
                                         />
                                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">€</span>
                                     </div>

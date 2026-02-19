@@ -105,7 +105,7 @@ const Order = () => {
     return (
         <div className="flex h-full gap-6">
             {/* LEFT SIDE */}
-            <div className="flex-[2] bg-white p-6 rounded-xl shadow flex flex-col">
+            <div className="flex-[2] bg-card p-6 rounded-xl shadow flex flex-col">
                 {/* Categories */}
                 <div className="flex gap-3 mb-6 overflow-x-auto">
                     <button
@@ -113,7 +113,7 @@ const Order = () => {
                         className={`px-6 py-2.5 rounded-xl font-bold transition-all border-2 whitespace-nowrap
                             ${selectedCategoryId === "All"
                                 ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
-                                : "bg-white border-border text-muted-foreground hover:border-primary/30 hover:text-primary"
+                                : "bg-card border-border text-muted-foreground hover:border-primary/30 hover:text-primary"
                             }`}
                     >
                         All Items
@@ -125,7 +125,7 @@ const Order = () => {
                             className={`px-6 py-2.5 rounded-xl font-bold transition-all whitespace-nowrap border-2
                                 ${selectedCategoryId === category.id
                                     ? "bg-secondary border-secondary text-secondary-foreground shadow-lg shadow-secondary/20"
-                                    : "bg-white border-border text-muted-foreground hover:border-secondary/30 hover:text-secondary"
+                                    : "bg-card border-border text-muted-foreground hover:border-secondary/30 hover:text-secondary"
                                 }`}
                         >
                             {category.name}
@@ -150,7 +150,7 @@ const Order = () => {
                                     addToCart(product);
                                 }
                             }}
-                            className="p-3 bg-white border border-border rounded-xl hover:bg-secondary/5 hover:border-secondary/30 transition-all text-left min-h-[130px] flex flex-col shadow-sm hover:shadow-md group"
+                            className="p-3 bg-card border border-border rounded-xl hover:bg-secondary/5 hover:border-secondary/30 transition-all text-left min-h-[130px] flex flex-col shadow-sm hover:shadow-md group"
                         >
                             <div className="flex-1">
                                 <h3 className="font-bold text-foreground text-sm leading-tight line-clamp-2 group-hover:text-secondary transition-colors mb-0.5">
@@ -167,7 +167,7 @@ const Order = () => {
                                 <p className="font-black text-primary text-lg font-mono-numbers leading-none">
                                     {product.price}€
                                 </p>
-                                <div className="flex justify-between items-center mt-1.5 pt-1.5 border-t border-gray-100">
+                                <div className="flex justify-between items-center mt-1.5 pt-1.5 border-t border-border">
                                     <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
                                         Stock: {product.quantity}
                                     </p>
@@ -182,7 +182,7 @@ const Order = () => {
             </div>
 
             {/* RIGHT SIDE - CART */}
-            <div className="flex-1 bg-white p-5 rounded-xl shadow flex flex-col border border-border/50">
+            <div className="flex-1 bg-card p-5 rounded-xl shadow flex flex-col border border-border/50">
                 <h2 className="text-lg font-black mb-3 text-foreground flex items-center gap-2">
                     <div className="w-2 h-5 bg-secondary rounded-full" />
                     {id ? `Edit Order #${id}` : "Current Order"}
@@ -190,7 +190,7 @@ const Order = () => {
 
                 <div className="flex-1 overflow-auto space-y-2.5 pr-1">
                     {cart.length === 0 && (
-                        <div className="text-center py-10 text-gray-400">
+                        <div className="text-center py-10 text-muted-foreground">
                             No items added
                         </div>
                     )}
@@ -198,7 +198,7 @@ const Order = () => {
                     {cart.map((item) => (
                         <div
                             key={item.uniqueId}
-                            className="flex justify-between items-center bg-gray-50/50 p-3 rounded-xl border border-gray-100 group transition-all hover:border-secondary/20 hover:bg-white"
+                            className="flex justify-between items-center bg-muted/50 p-3 rounded-xl border border-border group transition-all hover:border-secondary/20 hover:bg-card"
                         >
                             <div className="flex-1 min-w-0">
                                 <p className="font-bold text-foreground text-sm leading-tight truncate">{item.name}</p>
@@ -222,7 +222,7 @@ const Order = () => {
                             <div className="flex items-center gap-1.5 ml-2">
                                 <button
                                     onClick={() => decreaseQty(item.uniqueId)}
-                                    className="w-7 h-7 flex items-center justify-center bg-white border border-border text-red-500 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all shadow-sm active:scale-90"
+                                    className="w-7 h-7 flex items-center justify-center bg-card border border-border text-red-500 rounded-lg hover:bg-destructive/10 hover:border-destructive/30 transition-all shadow-sm active:scale-90"
                                 >
                                     <Minus size={14} />
                                 </button>
@@ -231,7 +231,7 @@ const Order = () => {
 
                                 <button
                                     onClick={() => increaseQty(item.uniqueId)}
-                                    className="w-7 h-7 flex items-center justify-center bg-white border border-border text-green-500 rounded-lg hover:bg-green-50 hover:border-green-200 transition-all shadow-sm active:scale-90"
+                                    className="w-7 h-7 flex items-center justify-center bg-card border border-border text-green-500 rounded-lg hover:bg-green-500/10 hover:border-green-500/30 transition-all shadow-sm active:scale-90"
                                 >
                                     <Plus size={14} />
                                 </button>
@@ -240,7 +240,7 @@ const Order = () => {
                     ))}
                 </div>
 
-                <div className="mt-4 border-t border-gray-100 pt-3">
+                <div className="mt-4 border-t border-border pt-3">
                     <div className="flex justify-between text-lg font-black mb-3 px-1 text-foreground">
                         <span>Total</span>
                         <span className="font-mono-numbers text-primary">{total.toFixed(2)}€</span>
@@ -275,7 +275,7 @@ const Order = () => {
                     {cart.length > 0 && (
                         <button
                             onClick={clearCart}
-                            className="w-full mt-2 py-1.5 text-red-500 hover:bg-red-50 rounded-lg transition text-xs font-bold"
+                            className="w-full mt-2 py-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition text-xs font-bold"
                         >
                             Clear Order
                         </button>

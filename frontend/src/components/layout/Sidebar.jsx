@@ -25,7 +25,7 @@ const Sidebar = () => {
 
     return (
         <div
-            className={`flex flex-col h-screen bg-white border-r border-border shadow-sm transition-all duration-300 ease-in-out z-50 overflow-x-hidden flex-shrink-0 ${isExpanded ? 'w-56' : 'w-16'}`}
+            className={`flex flex-col h-screen bg-card border-r border-border shadow-sm transition-all duration-300 ease-in-out z-50 overflow-x-hidden flex-shrink-0 ${isExpanded ? 'w-56' : 'w-16'}`}
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
         >
@@ -76,7 +76,7 @@ const Sidebar = () => {
             </nav>
 
             {/* User Profile & Logout */}
-            <div className="p-3 border-t border-border bg-gray-50/50">
+            <div className="p-3 border-t border-border bg-muted/50">
                 <div className={`flex items-center transition-all duration-300 mb-4 ${isExpanded ? 'px-1 gap-3' : 'justify-center'}`}>
                     <div className="w-10 h-10 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary font-bold text-sm flex-shrink-0 shadow-sm">
                         AD
