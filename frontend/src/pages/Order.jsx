@@ -44,7 +44,7 @@ const Order = () => {
                 if (id) {
                     const orderData = await getOrder(id);
                     if (orderData.status !== 'in_progress') {
-                        alert("Only orders in progress can be edited.");
+                        alert("Seules les commandes en cours peuvent etre modifiees.");
                         navigate("/orders");
                         return;
                     }
@@ -52,7 +52,7 @@ const Order = () => {
                     // Since loadCart uses item.product and item.name
                     const itemsWithNames = orderData.items.map(item => {
                         const p = productsData.find(prod => prod.id === item.product);
-                        return { ...item, name: p?.name || "Product" };
+                        return { ...item, name: p?.name || "Produit" };
                     });
                     loadCart(itemsWithNames);
                 } else {
@@ -89,7 +89,7 @@ const Order = () => {
             navigate("/orders");
         } catch (error) {
             console.error("Failed to save order", error);
-            alert("Failed to save order. Please try again.");
+            alert("Impossible de sauvegarder la commande. Veuillez reessayer.");
         } finally {
             setIsSaving(false);
         }
@@ -100,7 +100,7 @@ const Order = () => {
             ? products
             : products.filter((p) => p.category === selectedCategoryId);
 
-    if (loading) return <Loader text="Preparing Menu" />;
+    if (loading) return <Loader text="Preparation du menu" />;
 
     //     return (
     //         <div className="flex h-full gap-6">
@@ -317,7 +317,7 @@ const Order = () => {
                             }`}
                     >
                         <Utensils className="w-4 h-4" />
-                        All Items
+                        Tous les articles
                     </button>
                     {categories.map((category) => (
                         <button
@@ -371,7 +371,7 @@ const Order = () => {
                                     </p>
                                     <div className="flex justify-between items-center mt-2 pt-2 border-t border-border">
                                         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-                                            Qty: {product.quantity}
+                                            Qt: {product.quantity}
                                         </p>
                                         <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                                             <Plus className="w-3.5 h-3.5" />
@@ -390,7 +390,7 @@ const Order = () => {
                 <div className="p-5 border-b border-border bg-muted/20">
                     <h2 className="text-lg font-black text-foreground flex items-center gap-2">
                         <div className="w-2 h-5 bg-secondary rounded-full" />
-                        {id ? `Edit Order #${id.slice(-5)}` : "New Order"}
+                        {id ? `Modifier commande #${id.slice(-5)}` : "Nouvelle commande"}
                     </h2>
                 </div>
 
@@ -399,7 +399,7 @@ const Order = () => {
                     {cart.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-40">
                             <ShoppingCart size={48} strokeWidth={1.5} className="mb-2" />
-                            <p className="font-bold text-sm">Add items to start</p>
+                            <p className="font-bold text-sm">Ajoutez des articles pour commencer</p>
                         </div>
                     ) : (
                         cart.map((item) => (
@@ -446,7 +446,7 @@ const Order = () => {
                 {/* Order Summary & Footer */}
                 <div className="p-5 bg-muted/10 border-t border-border mt-auto">
                     <div className="flex justify-between items-center mb-4 px-1">
-                        <span className="text-muted-foreground font-bold">Grand Total</span>
+                        <span className="text-muted-foreground font-bold">Total general</span>
                         <span className="text-2xl font-black text-primary font-mono-numbers">{total.toFixed(2)}€</span>
                     </div>
 
@@ -456,8 +456,7 @@ const Order = () => {
                             onClick={handleSaveOrder}
                             className="flex items-center justify-center gap-2 py-3 bg-secondary text-secondary-foreground rounded-xl text-sm font-black hover:opacity-90 disabled:opacity-50 transition shadow-lg shadow-secondary/10"
                         >
-                            <Save size={18} />
-                            {isSaving ? "Saving..." : "Save"}
+                            {isSaving ? "Enregistrement..." : "Enregistrer"}
                         </button>
 
                         <button
@@ -465,7 +464,7 @@ const Order = () => {
                             onClick={() => setIsPaymentOpen(true)}
                             className="flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-xl text-sm font-black hover:opacity-90 disabled:opacity-50 transition shadow-lg shadow-primary/10"
                         >
-                            Checkout
+                            Paiement
                             <ArrowRight size={18} />
                         </button>
                     </div>
@@ -475,7 +474,7 @@ const Order = () => {
                             onClick={clearCart}
                             className="w-full mt-3 py-1 text-destructive hover:text-destructive/80 text-[10px] font-black uppercase tracking-widest transition"
                         >
-                            Clear Current Order
+                            Vider la commande en cours
                         </button>
                     )}
                 </div>
