@@ -17,10 +17,10 @@ const Orders = () => {
     const [filter, setFilter] = useState('active');
 
     const STATUS_MAP = {
-        in_progress: { label: "In Progress", color: "bg-blue-100 text-blue-600", icon: Clock },
-        ready: { label: "Ready", color: "bg-yellow-100 text-yellow-600", icon: ArrowRightCircle },
-        paid: { label: "Paid", color: "bg-green-100 text-green-600", icon: CheckCircle2 },
-        cancelled: { label: "Cancelled", color: "bg-red-100 text-red-600", icon: XCircle },
+        in_progress: { label: "En cours", color: "bg-blue-100 text-blue-600", icon: Clock },
+        ready: { label: "Prête", color: "bg-yellow-100 text-yellow-600", icon: ArrowRightCircle },
+        paid: { label: "Payée", color: "bg-green-100 text-green-600", icon: CheckCircle2 },
+        cancelled: { label: "Annulée", color: "bg-red-100 text-red-600", icon: XCircle },
     };
 
     const filteredOrders = orders.filter(order => {
@@ -39,7 +39,7 @@ const Orders = () => {
             setOrders(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
         } catch (err) {
             console.error("Failed to fetch orders:", err);
-            setError("Failed to load orders.");
+            setError("Impossible de charger les commandes.");
         } finally {
             setLoading(false);
         }
@@ -49,7 +49,7 @@ const Orders = () => {
         // Load items with names into cart
         const itemsWithNames = order.items.map(item => ({
             ...item,
-            name: item.product_name || "Product" // We might need the backend to return names
+            name: item.product_name || "Produit" // We might need the backend to return names
         }));
         loadCart(itemsWithNames);
         setOrderForPayment(order);
@@ -64,23 +64,23 @@ const Orders = () => {
             ));
         } catch (err) {
             console.error("Failed to update status:", err);
-            alert("Failed to update status.");
+            alert("Impossible de mettre a jour le statut.");
         }
     };
 
-    if (loading) return <Loader text="Retrieving Orders" />;
+    if (loading) return <Loader text="Récupération des commandes" />;
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
     return (
         <div className="bg-card p-6 rounded-xl shadow h-full flex flex-col h-screen overflow-hidden">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-foreground">All Orders</h2>
+                <h2 className="text-2xl font-bold text-foreground">Toutes les commandes</h2>
                 <div className="flex gap-2 bg-muted p-1.5 rounded-xl border border-border">
                     {[
-                        { id: 'active', label: 'Active' },
-                        { id: 'paid', label: 'Paid' },
-                        { id: 'cancelled', label: 'Cancelled' },
-                        { id: 'all', label: 'All' },
+                        { id: 'active', label: 'Actives' },
+                        { id: 'paid', label: 'Payées' },
+                        { id: 'cancelled', label: 'Annulées' },
+                        { id: 'all', label: 'Tous' },
                     ].map((tab) => (
                         <button
                             key={tab.id}
@@ -97,7 +97,7 @@ const Orders = () => {
                 </div>
             </div>
 
-            {filteredOrders.length === 0 && <p className="text-muted-foreground py-10 text-center font-bold">No {filter} orders found.</p>}
+            {filteredOrders.length === 0 && <p className="text-muted-foreground py-10 text-center font-bold">Aucune commande trouvee.</p>}
 
             <div className="flex-1 overflow-auto space-y-4 pr-2">
                 {filteredOrders.map((order) => {
@@ -112,7 +112,7 @@ const Orders = () => {
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-3 mb-1">
-                                        <p className="font-bold text-foreground">Order #{order.id}</p>
+                                        <p className="font-bold text-foreground">Commande #{order.id}</p>
                                         <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${status.color}`}>
                                             <StatusIcon size={12} />
                                             {status.label}
@@ -122,7 +122,7 @@ const Orders = () => {
                                         {new Date(order.created_at).toLocaleString()}
                                     </p>
                                     <p className="mt-2 text-[11px] font-bold text-muted-foreground uppercase tracking-tight line-clamp-1 max-w-[400px]">
-                                        {order.items && order.items.map(item => item.product_name || item.name || "Product").join(", ")}
+                                        {order.items && order.items.map(item => item.product_name || item.name || "Produit").join(", ")}
                                     </p>
                                 </div>
                             </div>
@@ -141,13 +141,13 @@ const Orders = () => {
                                                 className="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-100 transition-colors flex items-center gap-2"
                                             >
                                                 <Edit2 size={12} />
-                                                Edit
+                                                Modifier
                                             </button>
                                             <button
                                                 onClick={() => handleStatusUpdate(order.id, 'ready')}
                                                 className="px-4 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold hover:bg-yellow-200 transition-colors"
                                             >
-                                                Mark Ready
+                                                Marquer comme prête
                                             </button>
                                         </>
                                     )}
@@ -157,7 +157,7 @@ const Orders = () => {
                                             className="px-4 py-1.5 bg-green-50 text-green-600 rounded-lg text-xs font-bold hover:bg-green-100 transition-colors flex items-center gap-2"
                                         >
                                             <CreditCard size={12} />
-                                            Pay Now
+                                            Payer maintenant
                                         </button>
                                     )}
                                     {(order.status === 'in_progress' || order.status === 'ready') && (
@@ -165,7 +165,7 @@ const Orders = () => {
                                             onClick={() => handleStatusUpdate(order.id, 'cancelled')}
                                             className="px-4 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold hover:bg-red-100 transition-colors border border-red-100"
                                         >
-                                            Cancel
+                                            Annuler
                                         </button>
                                     )}
                                 </div>
@@ -191,3 +191,4 @@ const Orders = () => {
 };
 
 export default Orders;
+

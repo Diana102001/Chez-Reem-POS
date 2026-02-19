@@ -22,16 +22,16 @@ export default function Login() {
             if (result.success) {
                 navigate("/");
             } else {
-                setError(result.message || "Invalid credentials");
+                setError(result.message || "Identifiants invalides");
                 setIsSubmitting(false);
             }
         } catch (err) {
-            setError("An unexpected error occurred");
+            setError("Une erreur inattendue s'est produite");
             setIsSubmitting(false);
         }
     };
 
-    if (isSubmitting) return <Loader fullScreen text="Welcome back" />;
+    if (isSubmitting) return <Loader fullScreen text="Bienvenue" />;
 
     return (
         <div className="h-screen flex items-center justify-center bg-background">
@@ -40,7 +40,7 @@ export default function Login() {
                 className="bg-card p-8 rounded-2xl shadow-xl w-96"
             >
                 <h2 className="text-2xl font-bold mb-6 text-center text-foreground">
-                    Restaurant POS Login
+                    Connexion à la caisse POS
                 </h2>
 
                 {error && (
@@ -51,7 +51,7 @@ export default function Login() {
 
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder="Nom d'utilisateur"
                     className="w-full p-3 mb-4 border border-border rounded-lg bg-muted/50 text-foreground"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -59,7 +59,7 @@ export default function Login() {
 
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder="Mot de passe"
                     className="w-full p-3 mb-6 border border-border rounded-lg bg-muted/50 text-foreground"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -69,7 +69,7 @@ export default function Login() {
                     type="submit"
                     className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20"
                 >
-                    Sign In
+                    Se connecter
                 </button>
             </form>
         </div>

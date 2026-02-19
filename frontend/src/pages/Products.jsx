@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Check } from "lucide-react";
 import {
     getProducts,
     getCategories,
@@ -14,16 +15,25 @@ const Products = () => {
     const [categories, setCategories] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState(null);
+    const [productToDelete, setProductToDelete] = useState(null);
+    const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedCategoryId, setSelectedCategoryId] = useState("All");
+    const deleteCloseTimerRef = useRef(null);
 
     const filteredProducts = selectedCategoryId === "All"
         ? products
-        : products.filter(p => String(p.category) === String(selectedCategoryId));
+        : products.filter((p) => String(p.category) === String(selectedCategoryId));
 
     useEffect(() => {
         loadData();
+
+        return () => {
+            if (deleteCloseTimerRef.current) {
+                clearTimeout(deleteCloseTimerRef.current);
+            }
+        };
     }, []);
 
     const loadData = async () => {
@@ -37,7 +47,7 @@ const Products = () => {
             setCategories(categoriesData);
         } catch (err) {
             console.error("Failed to fetch data:", err);
-            setError("Failed to load products. Please ensure the backend is running.");
+            setError("Impossible de charger les produits. Verifiez que le serveur backend est actif.");
         } finally {
             setLoading(false);
         }
@@ -53,15 +63,33 @@ const Products = () => {
         setIsModalOpen(true);
     };
 
-    const handleDeleteClick = async (id) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            try {
-                await deleteProduct(id);
-                setProducts((prev) => prev.filter((product) => product.id !== id));
-            } catch (err) {
-                console.error("Failed to delete product:", err);
-                alert("Failed to delete product.");
-            }
+    const openDeleteModal = (product) => {
+        setProductToDelete(product);
+        setIsDeleteSuccess(false);
+    };
+
+    const closeDeleteModal = () => {
+        if (deleteCloseTimerRef.current) {
+            clearTimeout(deleteCloseTimerRef.current);
+            deleteCloseTimerRef.current = null;
+        }
+        setProductToDelete(null);
+        setIsDeleteSuccess(false);
+    };
+
+    const handleDeleteClick = async () => {
+        if (!productToDelete || isDeleteSuccess) return;
+
+        try {
+            await deleteProduct(productToDelete.id);
+            setProducts((prev) => prev.filter((product) => product.id !== productToDelete.id));
+            setIsDeleteSuccess(true);
+            deleteCloseTimerRef.current = setTimeout(() => {
+                closeDeleteModal();
+            }, 900);
+        } catch (err) {
+            console.error("Failed to delete product:", err);
+            alert("Impossible de supprimer le produit.");
         }
     };
 
@@ -79,29 +107,29 @@ const Products = () => {
             setIsModalOpen(false);
         } catch (err) {
             console.error("Failed to save product:", err);
-            alert("Failed to save product.");
+            alert("Impossible de sauvegarder le produit.");
         }
     };
 
     const getCategoryName = (categoryId) => {
         const category = categories.find((c) => c.id === categoryId);
-        return category ? category.name : "Unknown";
+        return category ? category.name : "Inconnu";
     };
 
-    if (loading) return <Loader text="Loading Products" />;
+    if (loading) return <Loader text="Chargement des produits" />;
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
     return (
         <div className="bg-card p-6 rounded-xl shadow h-full flex flex-col">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-foreground">Products</h2>
+                <h2 className="text-2xl font-bold text-foreground">Produits</h2>
                 <div className="flex items-center gap-4">
                     <select
                         value={selectedCategoryId}
                         onChange={(e) => setSelectedCategoryId(e.target.value)}
                         className="px-4 py-2.5 bg-muted border border-border rounded-xl text-sm font-bold text-foreground outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer min-w-[160px]"
                     >
-                        <option value="All">All Categories</option>
+                        <option value="All">Toutes les categories</option>
                         {categories.map((category) => (
                             <option key={category.id} value={category.id}>
                                 {category.name}
@@ -112,7 +140,7 @@ const Products = () => {
                         onClick={handleAddClick}
                         className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                     >
-                        Add Product
+                        Ajouter un produit
                     </button>
                 </div>
             </div>
@@ -121,10 +149,10 @@ const Products = () => {
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="border-b border-border">
-                            <th className="py-3 px-4 font-semibold text-muted-foreground">Name</th>
-                            {selectedCategoryId === "All" && <th className="py-3 px-4 font-semibold text-muted-foreground">Category</th>}
-                            <th className="py-3 px-4 font-semibold text-muted-foreground">Quantity</th>
-                            <th className="py-3 px-4 font-semibold text-muted-foreground">Price</th>
+                            <th className="py-3 px-4 font-semibold text-muted-foreground">Nom</th>
+                            {selectedCategoryId === "All" && <th className="py-3 px-4 font-semibold text-muted-foreground">Categorie</th>}
+                            <th className="py-3 px-4 font-semibold text-muted-foreground">Quantite</th>
+                            <th className="py-3 px-4 font-semibold text-muted-foreground">Prix</th>
                             <th className="py-3 px-4 font-semibold text-muted-foreground text-right">Actions</th>
                         </tr>
                     </thead>
@@ -153,13 +181,13 @@ const Products = () => {
                                         onClick={() => handleEditClick(product)}
                                         className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors text-sm font-bold shadow-sm"
                                     >
-                                        Edit
+                                        Modifier
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteClick(product.id)}
+                                        onClick={() => openDeleteModal(product)}
                                         className="px-3 py-1 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-colors text-sm font-bold shadow-sm"
                                     >
-                                        Delete
+                                        Supprimer
                                     </button>
                                 </td>
                             </tr>
@@ -168,7 +196,7 @@ const Products = () => {
                 </table>
                 {filteredProducts.length === 0 && (
                     <div className="text-center py-10 text-muted-foreground font-bold">
-                        No products found in this category.
+                        Aucun produit trouve dans cette categorie.
                     </div>
                 )}
             </div>
@@ -180,6 +208,49 @@ const Products = () => {
                 product={currentProduct}
                 categories={categories}
             />
+            {productToDelete && (
+                <div
+                    className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300"
+                    onClick={isDeleteSuccess ? undefined : closeDeleteModal}
+                >
+                    <div
+                        className="bg-card w-full max-w-md rounded-2xl shadow-2xl border border-border p-6"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {isDeleteSuccess ? (
+                            <div className="py-4 flex flex-col items-center">
+                                <div className="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-3">
+                                    <Check className="w-7 h-7" />
+                                </div>
+                                <p className="text-sm font-bold text-foreground">Produit supprime</p>
+                            </div>
+                        ) : (
+                            <>
+                                <h3 className="text-lg font-bold text-foreground mb-2">Supprimer le produit</h3>
+                                <p className="text-sm text-muted-foreground mb-6">
+                                    Etes-vous sur de vouloir supprimer ce produit ?
+                                </p>
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={closeDeleteModal}
+                                        className="px-4 py-2 rounded-xl bg-muted text-muted-foreground font-bold hover:bg-muted/80 transition-colors"
+                                    >
+                                        Annuler
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleDeleteClick}
+                                        className="px-4 py-2 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-colors"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

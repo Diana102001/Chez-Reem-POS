@@ -16,10 +16,10 @@ const Sidebar = () => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const menuItems = [
-        { name: "Dashboard", path: "/", icon: LayoutDashboard },
-        { name: "Order", path: "/order", icon: ShoppingCart },
-        { name: "All Orders", path: "/orders", icon: History },
-        { name: "Products", path: "/products", icon: Package },
+        { name: "Tableau de bord", path: "/", icon: LayoutDashboard },
+        { name: "Commande", path: "/order", icon: ShoppingCart },
+        { name: "Historique", path: "/orders", icon: History },
+        { name: "Produits", path: "/products", icon: Package },
         { name: "Categories", path: "/categories", icon: Layers },
     ];
 
@@ -37,7 +37,7 @@ const Sidebar = () => {
                     </div>
                     <div className={`transition-all duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 invisible w-0'}`}>
                         <h1 className="text-base font-bold text-foreground tracking-tight leading-none whitespace-nowrap">Chez Reem</h1>
-                        <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">POS System</p>
+                        <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">Systeme de caisse</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@ const Sidebar = () => {
             {/* Navigation */}
             <nav className="flex-1 px-2.5 py-6 space-y-1.5 overflow-y-auto overflow-x-hidden font-sans">
                 <p className={`px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-4 transition-all duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 h-0 pointer-events-none'}`}>
-                    Main Menu
+                    Menu Principal
                 </p>
                 {menuItems.map((item) => (
                     <NavLink
@@ -82,8 +82,8 @@ const Sidebar = () => {
                         AD
                     </div>
                     <div className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'opacity-100 w-full' : 'opacity-0 w-0'}`}>
-                        <p className="text-xs font-bold text-foreground truncate">Admin User</p>
-                        <p className="text-[10px] text-muted-foreground truncate font-medium">Administrator</p>
+                        <p className="text-xs font-bold text-foreground truncate">Utilisateur Admin</p>
+                        <p className="text-[10px] text-muted-foreground truncate font-medium">Administrateur</p>
                     </div>
                 </div>
                 <button
@@ -93,12 +93,12 @@ const Sidebar = () => {
                 >
                     <LogOut className={`flex-shrink-0 ${isExpanded ? 'w-4 h-4' : 'w-5 h-5'}`} />
                     <span className={`font-bold text-xs whitespace-nowrap transition-all duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 invisible w-0'}`}>
-                        Sign Out
+                        Deconnexion
                     </span>
 
                     {!isExpanded && (
                         <div className="absolute left-full ml-4 px-2 py-1 bg-destructive text-white text-xs rounded opacity-0 group-hover:opacity-100 invisible group-hover:visible pointer-events-none transition-all whitespace-nowrap z-50 shadow-lg">
-                            Sign Out
+                            Deconnexion
                         </div>
                     )}
                 </button>
@@ -108,3 +108,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

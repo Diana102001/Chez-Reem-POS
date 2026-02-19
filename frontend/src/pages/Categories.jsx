@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Check } from "lucide-react";
 import {
     getCategories,
     addCategory,
@@ -12,11 +13,20 @@ const Categories = () => {
     const [categories, setCategories] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(null);
+    const [categoryToDelete, setCategoryToDelete] = useState(null);
+    const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const deleteCloseTimerRef = useRef(null);
 
     useEffect(() => {
         loadCategories();
+
+        return () => {
+            if (deleteCloseTimerRef.current) {
+                clearTimeout(deleteCloseTimerRef.current);
+            }
+        };
     }, []);
 
     const loadCategories = async () => {
@@ -26,7 +36,7 @@ const Categories = () => {
             setCategories(data);
         } catch (err) {
             console.error("Failed to fetch categories:", err);
-            setError("Failed to load categories.");
+            setError("Impossible de charger les categories.");
         } finally {
             setLoading(false);
         }
@@ -42,15 +52,33 @@ const Categories = () => {
         setIsModalOpen(true);
     };
 
-    const handleDeleteClick = async (id) => {
-        if (window.confirm("Are you sure you want to delete this category?")) {
-            try {
-                await deleteCategory(id);
-                setCategories((prev) => prev.filter((c) => c.id !== id));
-            } catch (err) {
-                console.error("Failed to delete category:", err);
-                alert("Failed to delete category.");
-            }
+    const openDeleteModal = (category) => {
+        setCategoryToDelete(category);
+        setIsDeleteSuccess(false);
+    };
+
+    const closeDeleteModal = () => {
+        if (deleteCloseTimerRef.current) {
+            clearTimeout(deleteCloseTimerRef.current);
+            deleteCloseTimerRef.current = null;
+        }
+        setCategoryToDelete(null);
+        setIsDeleteSuccess(false);
+    };
+
+    const handleDeleteClick = async () => {
+        if (!categoryToDelete || isDeleteSuccess) return;
+
+        try {
+            await deleteCategory(categoryToDelete.id);
+            setCategories((prev) => prev.filter((c) => c.id !== categoryToDelete.id));
+            setIsDeleteSuccess(true);
+            deleteCloseTimerRef.current = setTimeout(() => {
+                closeDeleteModal();
+            }, 900);
+        } catch (err) {
+            console.error("Failed to delete category:", err);
+            alert("Impossible de supprimer la categorie.");
         }
     };
 
@@ -68,11 +96,11 @@ const Categories = () => {
             setIsModalOpen(false);
         } catch (err) {
             console.error("Failed to save category:", err);
-            alert("Failed to save category.");
+            alert("Impossible de sauvegarder la categorie.");
         }
     };
 
-    if (loading) return <Loader text="Loading Categories" />;
+    if (loading) return <Loader text="Chargement des categories" />;
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
     return (
@@ -83,7 +111,7 @@ const Categories = () => {
                     onClick={handleAddClick}
                     className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
                 >
-                    Add Category
+                    Ajouter une categorie
                 </button>
             </div>
 
@@ -91,7 +119,7 @@ const Categories = () => {
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="border-b border-border">
-                            <th className="py-3 px-4 font-semibold text-muted-foreground">Category</th>
+                            <th className="py-3 px-4 font-semibold text-muted-foreground">Categorie</th>
                             <th className="py-3 px-4 font-semibold text-muted-foreground text-right">Actions</th>
                         </tr>
                     </thead>
@@ -111,13 +139,13 @@ const Categories = () => {
                                         onClick={() => handleEditClick(category)}
                                         className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors text-sm font-bold shadow-sm"
                                     >
-                                        Edit
+                                        Modifier
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteClick(category.id)}
+                                        onClick={() => openDeleteModal(category)}
                                         className="px-3 py-1 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-colors text-sm font-bold shadow-sm"
                                     >
-                                        Delete
+                                        Supprimer
                                     </button>
                                 </td>
                             </tr>
@@ -126,7 +154,7 @@ const Categories = () => {
                 </table>
                 {categories.length === 0 && (
                     <div className="text-center py-10 text-muted-foreground">
-                        No categories found. Click "Add Category" to create one.
+                        Aucune categorie trouvee. Cliquez sur "Ajouter une categorie" pour en creer une.
                     </div>
                 )}
             </div>
@@ -137,6 +165,49 @@ const Categories = () => {
                 onSave={handleSave}
                 category={currentCategory}
             />
+            {categoryToDelete && (
+                <div
+                    className="fixed inset-0 bg-foreground/10 flex items-center justify-center z-50 backdrop-blur-md transition-all duration-300"
+                    onClick={isDeleteSuccess ? undefined : closeDeleteModal}
+                >
+                    <div
+                        className="bg-card w-full max-w-md rounded-2xl shadow-2xl border border-border p-6"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {isDeleteSuccess ? (
+                            <div className="py-4 flex flex-col items-center">
+                                <div className="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-3">
+                                    <Check className="w-7 h-7" />
+                                </div>
+                                <p className="text-sm font-bold text-foreground">Categorie supprimee</p>
+                            </div>
+                        ) : (
+                            <>
+                                <h3 className="text-lg font-bold text-foreground mb-2">Supprimer la categorie</h3>
+                                <p className="text-sm text-muted-foreground mb-6">
+                                    Etes-vous sur de vouloir supprimer cette categorie ?
+                                </p>
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={closeDeleteModal}
+                                        className="px-4 py-2 rounded-xl bg-muted text-muted-foreground font-bold hover:bg-muted/80 transition-colors"
+                                    >
+                                        Annuler
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleDeleteClick}
+                                        className="px-4 py-2 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-colors"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -67,7 +67,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                                 {product.description}
                             </p>
                         ) : (
-                            <p className="text-[11px] text-muted-foreground italic">No description available</p>
+                            <p className="text-[11px] text-muted-foreground italic">Aucune description disponible</p>
                         )}
                     </div>
                     <button
@@ -85,7 +85,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                         <div className="space-y-3">
                             <h3 className="text-[10px] font-black uppercase tracking-widest text-[#808c49] flex items-center gap-2">
                                 <span className="w-1 h-1 rounded-full bg-[#808c49]"></span>
-                                Extras & Add-ons
+                                Extras et supplements
                             </h3>
                             <div className="grid grid-cols-2 gap-2">
                                 {categoryOptions.map((opt, idx) => {
@@ -166,7 +166,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
 
                     {(!product.options || product.options.length === 0) && (!categoryOptions || categoryOptions.length === 0) && (
                         <div className="text-center py-6 text-[11px] italic text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border">
-                            No customizable options
+                            Aucune option personnalisable
                         </div>
                     )}
                 </div>
@@ -175,14 +175,14 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                 <div className="p-4 bg-muted border-t border-border mt-auto">
                     <div className="flex justify-between items-end mb-4">
                         <div>
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Total Price</p>
+                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Prix total</p>
                             <p className="text-2xl font-black text-primary font-mono-numbers">
                                 {totalPrice.toFixed(2)}€
                             </p>
                         </div>
                         <div className="text-right">
                             <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest bg-card px-2 py-0.5 rounded-full border border-border inline-block">
-                                {selectedChoices.length} customization(s)
+                                {selectedChoices.length} personnalisation(s)
                             </p>
                         </div>
                     </div>
@@ -191,7 +191,7 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
                         className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-black hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 uppercase tracking-widest text-xs"
                     >
                         <ShoppingCart className="w-4 h-4" />
-                        Add to Order
+                        Ajouter a la commande
                     </button>
                 </div>
             </div>
@@ -200,3 +200,4 @@ const OptionSelectionModal = ({ isOpen, onClose, product, categoryOptions = [], 
 };
 
 export default OptionSelectionModal;
+

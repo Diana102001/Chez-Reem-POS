@@ -35,7 +35,7 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
             }
 
             setToast({
-                message: "Order completed successfully!",
+                message: "Commande validee avec succes !",
                 type: "success"
             });
 
@@ -48,7 +48,7 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
             console.error("Order failed", error);
 
             setToast({
-                message: "Failed to process order.",
+                message: "Echec du traitement de la commande.",
                 type: "error"
             });
         }
@@ -63,7 +63,7 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
                 <div className="bg-card w-[400px] p-8 rounded-3xl shadow-2xl border border-border relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
-                        <h2 className="text-xl font-bold text-foreground">Complete Payment</h2>
+                        <h2 className="text-xl font-bold text-foreground">Finaliser le paiement</h2>
                         <button
                             onClick={onClose}
                             className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground"
@@ -74,7 +74,7 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
 
                     {/* Amount Display */}
                     <div className="mb-8 p-6 bg-secondary/5 rounded-2xl border border-secondary/10 text-center">
-                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Total Amount</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2">Montant total</p>
                         <p className="text-3xl font-black text-secondary font-mono-numbers">
                             {total.toFixed(2)}€
                         </p>
@@ -82,18 +82,21 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
 
                     {/* Method Selection */}
                     <div className="mb-8">
-                        <p className="text-xs font-bold text-foreground mb-4 uppercase tracking-wider">Select Payment Method</p>
+                        <p className="text-xs font-bold text-foreground mb-4 uppercase tracking-wider">Choisir le mode de paiement</p>
                         <div className="flex gap-4">
-                            {["Cash", "Card"].map((type) => (
+                            {[
+                                { value: "Cash", label: "Especes" },
+                                { value: "Card", label: "Carte" },
+                            ].map((type) => (
                                 <button
-                                    key={type}
-                                    onClick={() => setMethod(type)}
-                                    className={`flex-1 py-4 rounded-2xl font-bold transition-all duration-200 border-2 ${method === type
+                                    key={type.value}
+                                    onClick={() => setMethod(type.value)}
+                                    className={`flex-1 py-4 rounded-2xl font-bold transition-all duration-200 border-2 ${method === type.value
                                         ? "border-secondary bg-secondary text-secondary-foreground shadow-lg shadow-secondary/20"
                                         : "border-border bg-card text-muted-foreground hover:border-secondary/30 hover:text-secondary"
                                         }`}
                                 >
-                                    {type}
+                                    {type.label}
                                 </button>
                             ))}
                         </div>
@@ -106,14 +109,14 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
                             disabled={loading}
                             className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary/20"
                         >
-                            {loading ? "Processing..." : `Pay ${total.toFixed(2)}€`}
+                            {loading ? "Traitement..." : `Payer ${total.toFixed(2)}€`}
                         </button>
                         <button
                             onClick={onClose}
                             disabled={loading}
                             className="w-full py-3 text-muted-foreground hover:text-destructive font-bold transition-colors text-sm"
                         >
-                            Cancel Transaction
+                            Annuler la transaction
                         </button>
 
                     </div>
@@ -136,3 +139,4 @@ const PaymentModal = ({ isOpen, onClose, orderId }) => {
 };
 
 export default PaymentModal;
+

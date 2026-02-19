@@ -50,10 +50,10 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                         </div>
                         <div>
                             <h2 className="text-lg font-bold text-foreground">
-                                {category ? "Edit Category" : "Add Category"}
+                                {category ? "Modifier la categorie" : "Ajouter une categorie"}
                             </h2>
                             <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">
-                                {category ? "Update existing" : "Create new"}
+                                {category ? "Modifier existante" : "Creer nouvelle"}
                             </p>
                         </div>
                     </div>
@@ -70,21 +70,21 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                     <div>
                         <label className="flex items-center gap-2 text-xs font-black text-secondary mb-3 uppercase tracking-widest">
                             <Tag className="w-3.5 h-3.5" />
-                            General Information
+                            Informations generales
                         </label>
                         <div className="space-y-4">
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="Category Name (e.g. Beverages)"
+                                placeholder="Nom de la categorie (ex: Boissons)"
                                 required
                                 className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-bold text-foreground"
                             />
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Category Description (optional)"
+                                placeholder="Description de la categorie (optionnel)"
                                 rows="2"
                                 className="block w-full rounded-2xl border-border bg-muted/50 p-4 text-xs focus:border-secondary focus:ring-secondary/20 transition-all border outline-none font-medium resize-none text-foreground"
                             />
@@ -96,14 +96,14 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                         <div className="flex justify-between items-center mb-6">
                             <label className="flex items-center gap-2 text-xs font-black text-secondary uppercase tracking-widest">
                                 <span className="w-3.5 h-3.5 bg-secondary rounded-full flex items-center justify-center text-[8px] text-white">?</span>
-                                Global Options
+                                Options globales
                             </label>
                             <button
                                 type="button"
                                 onClick={addOption}
                                 className="px-4 py-2 bg-secondary/10 text-secondary hover:bg-secondary/20 rounded-xl text-xs font-bold transition-all"
                             >
-                                Add Option
+                                Ajouter une option
                             </button>
                         </div>
 
@@ -112,7 +112,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                                 <div key={idx} className="flex gap-2 items-center animate-in slide-in-from-left-2 fade-in duration-200">
                                     <input
                                         type="text"
-                                        placeholder="Add-on name"
+                                        placeholder="Nom de l'extra"
                                         value={option.name}
                                         onChange={(e) => updateOption(idx, "name", e.target.value)}
                                         className="flex-1 bg-muted/50 border border-border rounded-xl p-3 text-sm focus:border-secondary outline-none font-medium text-foreground"
@@ -120,7 +120,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                                     <div className="relative w-24">
                                         <input
                                             type="number"
-                                            placeholder="Price"
+                                            placeholder="Prix"
                                             value={option.price_change}
                                             onChange={(e) => updateOption(idx, "price_change", e.target.value)}
                                             step="0.01"
@@ -139,7 +139,7 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                             ))}
                             {options.length === 0 && (
                                 <p className="text-center py-4 text-xs italic text-muted-foreground opacity-60">
-                                    No category-wide options defined.
+                                    Aucune option globale definie.
                                 </p>
                             )}
                         </div>
@@ -152,13 +152,13 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
                             onClick={onClose}
                             className="flex-1 py-4 bg-muted text-muted-foreground rounded-2xl font-bold hover:bg-muted/80 transition-all text-xs uppercase tracking-widest"
                         >
-                            Cancel
+                            Annuler
                         </button>
                         <button
                             type="submit"
                             className="flex-[2] py-4 bg-primary text-primary-foreground rounded-2xl font-black hover:opacity-90 transition-all shadow-xl shadow-primary/20 text-xs uppercase tracking-widest"
                         >
-                            {category ? "Save Changes" : "Save Category"}
+                            {category ? "Enregistrer les modifications" : "Enregistrer la categorie"}
                         </button>
                     </div>
                 </form>
@@ -172,3 +172,4 @@ const CategoryModal = ({ isOpen, onClose, onSave, category }) => {
 };
 
 export default CategoryModal;
+

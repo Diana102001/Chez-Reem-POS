@@ -1,6 +1,6 @@
 import { UtensilsCrossed } from "lucide-react";
 
-const Loader = ({ fullScreen = false, text = "Loading..." }) => {
+const Loader = ({ fullScreen = false, text = "Chargement..." }) => {
     if (fullScreen) {
         return (
             <div className="fixed inset-0 bg-background/60 backdrop-blur-[2px] z-[9999] flex flex-col items-center justify-center transition-opacity duration-150">
@@ -44,3 +44,4 @@ const Loader = ({ fullScreen = false, text = "Loading..." }) => {
 };
 
 export default Loader;
+

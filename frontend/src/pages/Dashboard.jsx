@@ -157,24 +157,24 @@ const Dashboard = () => {
 
     return (
         <div className="h-full overflow-y-auto pr-2 space-y-6">
-            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground">Tableau de bord</h1>
 
             {/* ─── Stat Cards ─── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard
-                    title="Total Revenue"
+                    title="Revenu total"
                     value={`${stats.total_revenue.toFixed(2)}€`}
                     icon={ShoppingCart}
                     accentColor="bg-primary"
                 />
                 <StatCard
-                    title="Total Orders"
+                    title="Total des commandes"
                     value={stats.total_orders}
                     icon={ListOrdered}
                     accentColor="bg-secondary"
                 />
                 <StatCard
-                    title="Total Products"
+                    title="Total des produits"
                     value={stats.total_products}
                     icon={UtensilsCrossed}
                     accentColor="bg-blue-500"
@@ -184,10 +184,10 @@ const Dashboard = () => {
             {/* ─── Revenue Charts ─── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Daily Revenue */}
-                <ChartCard title="Daily Revenue (Last 30 Days)" icon={TrendingUp}>
+                <ChartCard title="Revenu quotidien (30 derniers jours)" icon={TrendingUp}>
                     {dailyChartData[0].data.length === 0 ? (
                         <p className="text-muted-foreground text-sm py-8 text-center">
-                            No revenue data available for the last 30 days.
+                            Aucune donn\u00e9e de revenu disponible pour les 30 derniers jours
                         </p>
                     ) : (
                         <div style={{ height: 280 }}>
@@ -202,10 +202,10 @@ const Dashboard = () => {
                 </ChartCard>
 
                 {/* Weekly Revenue */}
-                <ChartCard title="Weekly Revenue (Last 12 Weeks)" icon={TrendingUp}>
+                <ChartCard title="Revenu hebdomadaire (12 dernières semaines)" icon={TrendingUp}>
                     {weeklyChartData[0].data.length === 0 ? (
                         <p className="text-muted-foreground text-sm py-8 text-center">
-                            No revenue data available for the last 12 weeks.
+                            Aucune donn\u00e9e de revenu disponible pour les 12 derni\u00e8res semaines
                         </p>
                     ) : (
                         <div style={{ height: 280 }}>
@@ -227,11 +227,11 @@ const Dashboard = () => {
                         <Crown className="text-secondary w-4 h-4" />
                     </div>
                     <h2 className="text-base font-black text-foreground tracking-tight">
-                        Most Demanded by Category
+                        Les plus demandés par catégorie
                     </h2>
                 </div>
                 {stats.most_demanded_by_category.length === 0 ? (
-                    <p className="text-muted-foreground text-sm">No order data available yet.</p>
+                    <p className="text-muted-foreground text-sm">Aucune donnée de commande disponible pour le moment.</p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {stats.most_demanded_by_category.map((item, idx) => (
@@ -253,7 +253,7 @@ const Dashboard = () => {
                                         <span className="font-mono-numbers font-bold text-secondary">
                                             {item.total_qty}
                                         </span>{" "}
-                                        units ordered
+                                        unités commandées
                                     </p>
                                 </div>
                             </div>
@@ -269,21 +269,21 @@ const Dashboard = () => {
                         <Package className="text-primary w-5 h-5" />
                     </div>
                     <h2 className="text-xl font-black text-foreground tracking-tight">
-                        Low Stock Alerts
+                        Alertes de faible stock
                     </h2>
                 </div>
                 {stats.low_stock_items.length === 0 ? (
                     <p className="text-brand-secondary font-medium">
-                        All products are well stocked.
+                        Tous les produits sont bien en stock.
                     </p>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b border-border text-xs text-muted-foreground uppercase tracking-widest">
-                                    <th className="py-3 font-bold">Product Name</th>
-                                    <th className="py-3 font-bold">Current Quantity</th>
-                                    <th className="py-3 font-bold">Status</th>
+                                    <th className="py-3 font-bold">Nom du produit</th>
+                                    <th className="py-3 font-bold">Quantité actuelle</th>
+                                    <th className="py-3 font-bold">Statut</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -300,7 +300,7 @@ const Dashboard = () => {
                                         </td>
                                         <td className="py-4">
                                             <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-tighter">
-                                                Critically Low
+                                                Critique
                                             </span>
                                         </td>
                                     </tr>

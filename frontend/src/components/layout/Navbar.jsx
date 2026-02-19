@@ -10,17 +10,17 @@ const Navbar = () => {
     const getPageTitle = () => {
         switch (location.pathname) {
             case "/":
-                return "Dashboard";
+                return "Tableau de bord";
             case "/orders":
-                return "All Orders";
+                return "Historique des commandes";
             case "/order":
-                return "Order";
+                return "Commander";
             case "/products":
-                return "Products";
+                return "Produits";
             case "/categories":
-                return "Categories";
+                return "Catégories";
             default:
-                return "POS System";
+                return "Système de caisse";
         }
     };
 
@@ -36,7 +36,7 @@ const Navbar = () => {
                 <button
                     onClick={toggleTheme}
                     className="p-2 rounded-xl bg-muted text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/80"
-                    title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                    title={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
                 >
                     {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </button>
