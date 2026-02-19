@@ -22,3 +22,13 @@ export const logout = () => {
 export const getCurrentUser = () => {
     return localStorage.getItem('access');
 };
+
+export const getMe = async () => {
+    const response = await api.get('users/me/');
+    return response.data;
+};
+
+export const updateMe = async (payload) => {
+    const response = await api.patch('users/me/', payload);
+    return response.data;
+};

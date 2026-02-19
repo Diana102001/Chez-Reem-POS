@@ -1,11 +1,15 @@
 // src/components/layout/Navbar.jsx
 import { useLocation } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { Sun, Moon } from "lucide-react";
 
 const Navbar = () => {
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
+    const { user } = useContext(AuthContext);
+    const roleLabel = user?.role === "admin" || user?.is_superuser ? "administrateur" : "caissier";
 
     const getPageTitle = () => {
         switch (location.pathname) {
@@ -18,9 +22,11 @@ const Navbar = () => {
             case "/products":
                 return "Produits";
             case "/categories":
-                return "Catégories";
+                return "Categories";
+            case "/users":
+                return "Utilisateurs";
             default:
-                return "Système de caisse";
+                return "Systeme de caisse";
         }
     };
 
@@ -33,6 +39,10 @@ const Navbar = () => {
 
             {/* User Section */}
             <div className="flex items-center gap-4">
+                <span className="text-muted-foreground text-sm">
+                    Vous etes connecte en tant que {roleLabel}
+                </span>
+
                 <button
                     onClick={toggleTheme}
                     className="p-2 rounded-xl bg-muted text-muted-foreground hover:text-foreground transition-all duration-200 hover:bg-muted/80"
@@ -40,12 +50,6 @@ const Navbar = () => {
                 >
                     {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </button>
-
-                <span className="text-muted-foreground">Admin</span>
-
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-xs shadow-lg shadow-primary/20">
-                    AD
-                </div>
             </div>
         </div>
     );

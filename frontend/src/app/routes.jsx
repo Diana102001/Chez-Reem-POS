@@ -5,9 +5,11 @@ import Orders from '../pages/Orders';
 import Order from '../pages/Order';
 import Products from '../pages/Products';
 import Categories from '../pages/Categories';
+import Users from '../pages/Users';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
 import ProtectedRoute from '../components/layout/ProtectedRoute';
+import AdminRoute from '../components/layout/AdminRoute';
 
 const AppRoutes = () => {
     return (
@@ -23,8 +25,9 @@ const AppRoutes = () => {
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/order/:id" element={<Order />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/categories" element={<Categories />} />
+                <Route path="/products" element={<AdminRoute><Products /></AdminRoute>} />
+                <Route path="/categories" element={<AdminRoute><Categories /></AdminRoute>} />
+                <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} />
             </Route>
         </Routes>
     );

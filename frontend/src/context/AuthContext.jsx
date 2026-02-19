@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import { login, logout, getCurrentUser } from '../services/authService';
+import { login, logout, getCurrentUser, getMe } from '../services/authService';
 
 export const AuthContext = createContext();
 
@@ -8,17 +8,41 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = getCurrentUser();
-        if (token) {
-            setUser({ token });
-        }
-        setLoading(false);
+        const initializeAuth = async () => {
+            const token = getCurrentUser();
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const profile = await getMe();
+                setUser({ token, ...profile });
+            } catch (error) {
+                logout();
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initializeAuth();
     }, []);
+
+    const refreshUser = async () => {
+        const token = getCurrentUser();
+        if (!token) return null;
+        const profile = await getMe();
+        const nextUser = { token, ...profile };
+        setUser(nextUser);
+        return nextUser;
+    };
 
     const handleLogin = async (username, password) => {
         try {
             const data = await login(username, password);
-            setUser({ token: data.access });
+            const profile = await getMe();
+            setUser({ token: data.access, ...profile });
             return { success: true };
         } catch (error) {
             console.error("Login failed", error);
@@ -33,7 +57,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login: handleLogin, logout: handleLogout, loading }}>
+        <AuthContext.Provider value={{ user, login: handleLogin, logout: handleLogout, loading, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );
