@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getProducts, getCategories } from "../services/productService";
-import { saveOrder, getOrder, updateOrder } from "../services/orderService";
+import { saveOrder, getOrder, getTaxTypes, updateOrder } from "../services/orderService";
 import { useCart } from "../context/CartContext";
 import { ShoppingCart, Plus, Minus, Trash2, Tag, Utensils, Search, Filter, History, Clock, ArrowRight, Save, Receipt, ChevronRight, Edit2 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ const Order = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [selectedCategoryId, setSelectedCategoryId] = useState("All");
+    const [taxTypes, setTaxTypes] = useState([]);
+    const [selectedTaxType, setSelectedTaxType] = useState("");
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -33,12 +35,14 @@ const Order = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [productsData, categoriesData] = await Promise.all([
+                const [productsData, categoriesData, taxTypesData] = await Promise.all([
                     getProducts(),
-                    getCategories()
+                    getCategories(),
+                    getTaxTypes()
                 ]);
                 setProducts(productsData);
                 setCategories(categoriesData);
+                setTaxTypes(taxTypesData);
 
                 // If editing, fetch order
                 if (id) {
@@ -55,8 +59,12 @@ const Order = () => {
                         return { ...item, name: p?.name || "Produit" };
                     });
                     loadCart(itemsWithNames);
+                    setSelectedTaxType(orderData.tax_type ? String(orderData.tax_type) : "");
                 } else {
                     clearCart();
+                    if (taxTypesData.length > 0) {
+                        setSelectedTaxType(String(taxTypesData[0].id));
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch data", error);
@@ -76,6 +84,7 @@ const Order = () => {
                 quantity: item.quantity,
                 choices: item.selectedChoices
             })),
+            tax_type: selectedTaxType || null,
             status: 'in_progress'
         };
 
@@ -99,6 +108,11 @@ const Order = () => {
         selectedCategoryId === "All"
             ? products
             : products.filter((p) => p.category === selectedCategoryId);
+    const activeTaxType = taxTypes.find((taxType) => String(taxType.id) === String(selectedTaxType));
+    const taxPercent = activeTaxType ? parseFloat(activeTaxType.percent) : 0;
+    const totalWithTax = total;
+    const taxAmount = taxPercent > 0 ? totalWithTax * (taxPercent / (100 + taxPercent)) : 0;
+    const subtotal = totalWithTax - taxAmount;
 
     if (loading) return <Loader text="Preparation du menu" />;
 
@@ -169,7 +183,6 @@ const Order = () => {
     //                                 </p>
     //                                 <div className="flex justify-between items-center mt-1.5 pt-1.5 border-t border-border">
     //                                     <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-    //                                         Stock: {product.quantity}
     //                                     </p>
     //                                     <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
     //                                         <Plus className="w-3 h-3" />
@@ -307,7 +320,7 @@ const Order = () => {
             <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
 
                 {/* 1. Horizontal Category Scroller */}
-                <div className="flex gap-2 mb-4 pb-2 overflow-x-auto scrollbar-hide shrink-0">
+                <div className="flex gap-2 mb-2 pb-1 overflow-x-auto scrollbar-hide shrink-0">
                     <button
                         onClick={() => setSelectedCategoryId("All")}
                         className={`px-5 py-2.5 rounded-xl font-bold transition-all border-2 whitespace-nowrap text-sm flex items-center gap-2
@@ -336,7 +349,7 @@ const Order = () => {
 
                 {/* 2. Product Grid (Scrollable area) */}
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 content-start pb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 content-start pb-2">
                         {filteredProducts.map((product) => (
                             <button
                                 key={product.id}
@@ -352,30 +365,23 @@ const Order = () => {
                                         addToCart(product);
                                     }
                                 }}
-                                className="p-3 bg-card border border-border rounded-xl hover:ring-2 hover:ring-secondary/40 transition-all text-left flex flex-col justify-between shadow-sm min-h-[140px] group active:scale-[0.98]"
+                                className="p-3 bg-card border border-border rounded-xl hover:ring-2 hover:ring-secondary/40 transition-all text-left shadow-sm min-h-[108px] group active:scale-[0.98] flex flex-col"
                             >
-                                <div>
-                                    <h3 className="font-bold text-foreground text-sm line-clamp-2 leading-tight group-hover:text-secondary transition-colors">
+                                <div className="min-h-[52px]">
+                                    <h3 className="font-bold text-foreground text-sm line-clamp-2 leading-tight min-h-[36px] group-hover:text-secondary transition-colors">
                                         {product.name}
                                     </h3>
-                                    {product.details && (
-                                        <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mt-1">
-                                            {product.details}
-                                        </p>
-                                    )}
+                                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mt-1 min-h-[12px] line-clamp-1">
+                                        {product.details || "\u00A0"}
+                                    </p>
                                 </div>
 
-                                <div className="mt-4">
-                                    <p className="text-lg font-black text-primary font-mono-numbers leading-none">
-                                        {product.price}€
+                                <div className="mt-auto pt-1 border-t border-border flex items-center justify-between">
+                                    <p className="text-sm font-black text-primary font-mono-numbers leading-none">
+                                        {product.price} €
                                     </p>
-                                    <div className="flex justify-between items-center mt-2 pt-2 border-t border-border">
-                                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
-                                            Qt: {product.quantity}
-                                        </p>
-                                        <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                                            <Plus className="w-3.5 h-3.5" />
-                                        </div>
+                                    <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                                        <Plus className="w-3.5 h-3.5" />
                                     </div>
                                 </div>
                             </button>
@@ -387,15 +393,32 @@ const Order = () => {
             {/* RIGHT SIDE: Fixed Width Order Panel */}
             <div className="w-[400px] shrink-0 bg-card rounded-2xl shadow-xl border border-border flex flex-col overflow-hidden">
                 {/* Order Header */}
-                <div className="p-5 border-b border-border bg-muted/20">
+                <div className="p-4 border-b border-border bg-muted/20">
                     <h2 className="text-lg font-black text-foreground flex items-center gap-2">
                         <div className="w-2 h-5 bg-secondary rounded-full" />
                         {id ? `Modifier commande #${id.slice(-5)}` : "Nouvelle commande"}
                     </h2>
+                    <div className="mt-2 flex items-center gap-2.5">
+                        <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">
+                            Type de ticket
+                        </label>
+                        <select
+                            value={selectedTaxType}
+                            onChange={(e) => setSelectedTaxType(e.target.value)}
+                            className="flex-1 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-semibold text-foreground outline-none"
+                        >
+                            <option value="">Aucun</option>
+                            {taxTypes.map((taxType) => (
+                                <option key={taxType.id} value={taxType.id}>
+                                    {taxType.type}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Cart Items List */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar">
                     {cart.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-40">
                             <ShoppingCart size={48} strokeWidth={1.5} className="mb-2" />
@@ -444,17 +467,19 @@ const Order = () => {
                 </div>
 
                 {/* Order Summary & Footer */}
-                <div className="p-5 bg-muted/10 border-t border-border mt-auto">
-                    <div className="flex justify-between items-center mb-4 px-1">
-                        <span className="text-muted-foreground font-bold">Total general</span>
-                        <span className="text-2xl font-black text-primary font-mono-numbers">{total.toFixed(2)}€</span>
+                <div className="p-3 bg-muted/10 border-t border-border mt-auto">
+                    <div className="mb-2 px-1">
+                        <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground font-bold">Total</span>
+                            <span className="text-xl font-black text-primary font-mono-numbers">{totalWithTax.toFixed(2)} EUR</span>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center justify-center gap-15">
                         <button
                             disabled={cart.length === 0 || isSaving}
                             onClick={handleSaveOrder}
-                            className="flex items-center justify-center gap-2 py-3 bg-secondary text-secondary-foreground rounded-xl text-sm font-black hover:opacity-90 disabled:opacity-50 transition shadow-lg shadow-secondary/10"
+                            className="w-[36%] h-7 flex items-center justify-center gap-1.5 bg-secondary text-secondary-foreground rounded-xl text-[10px] font-black hover:opacity-90 disabled:opacity-50 transition shadow-lg shadow-secondary/10"
                         >
                             {isSaving ? "Enregistrement..." : "Enregistrer"}
                         </button>
@@ -462,21 +487,20 @@ const Order = () => {
                         <button
                             disabled={cart.length === 0}
                             onClick={() => setIsPaymentOpen(true)}
-                            className="flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-xl text-sm font-black hover:opacity-90 disabled:opacity-50 transition shadow-lg shadow-primary/10"
+                            className="w-[36%] h-7 flex items-center justify-center gap-1.5 bg-primary text-primary-foreground rounded-xl text-[10px] font-black hover:opacity-90 disabled:opacity-50 transition shadow-lg shadow-primary/10"
                         >
                             Paiement
-                            <ArrowRight size={18} />
+                            <ArrowRight size={14} />
                         </button>
                     </div>
 
-                    {cart.length > 0 && (
-                        <button
-                            onClick={clearCart}
-                            className="w-full mt-3 py-1 text-destructive hover:text-destructive/80 text-[10px] font-black uppercase tracking-widest transition"
-                        >
-                            Vider la commande en cours
-                        </button>
-                    )}
+                    <button
+                        onClick={clearCart}
+                        disabled={cart.length === 0}
+                        className={`w-full mt-2 pb-1 text-[8px] font-black uppercase tracking-widest underline underline-offset-2 transition ${cart.length > 0 ? "text-destructive hover:text-destructive/80" : "text-transparent pointer-events-none"}`}
+                    >
+                        Vider la commande en cours
+                    </button>
                 </div>
             </div>
 
@@ -485,6 +509,10 @@ const Order = () => {
                 isOpen={isPaymentOpen}
                 onClose={() => setIsPaymentOpen(false)}
                 orderId={id}
+                taxTypeId={selectedTaxType || null}
+                subtotal={subtotal}
+                taxAmount={taxAmount}
+                totalWithTax={totalWithTax}
             />
             <OptionSelectionModal
                 isOpen={isOptionModalOpen}

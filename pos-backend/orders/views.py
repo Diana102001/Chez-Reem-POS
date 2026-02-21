@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from django.db.models.functions import TruncDate, TruncWeek
 from django.utils import timezone
 
@@ -9,10 +9,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Order, OrderItem
-from .serializers import OrderSerializer, OrderItemSerializer
+from .models import Order, OrderItem, TaxType
+from .serializers import OrderSerializer, OrderItemSerializer, TaxTypeSerializer
 from products.models import Product, Category
-from users.permissions import IsAdmin, IsCashier
+from users.permissions import IsAdmin, IsCashier, IsAdminOrReadOnly
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -25,6 +25,12 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated, IsCashier]
+
+
+class TaxTypeViewSet(viewsets.ModelViewSet):
+    queryset = TaxType.objects.all().order_by('type')
+    serializer_class = TaxTypeSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
 
 
 @api_view(['GET'])
@@ -86,12 +92,6 @@ def dashboard_stats(request):
                 'total_qty': top_product['total_qty'],
             })
 
-    # --- Low Stock Items ---
-    low_stock = list(
-        Product.objects.filter(quantity__lt=5)
-        .values('id', 'name', 'quantity')
-    )
-
     return Response({
         'total_revenue': float(total_revenue),
         'total_orders': total_orders,
@@ -99,5 +99,5 @@ def dashboard_stats(request):
         'daily_revenue': daily_revenue,
         'weekly_revenue': weekly_revenue,
         'most_demanded_by_category': most_demanded,
-        'low_stock_items': low_stock,
+        'low_stock_items': [],
     })

@@ -8,7 +8,6 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
         category: "",
         details: "",
         description: "",
-        quantity: 0,
         options: [] // [{ name: "Size", choices: [{ name: "Large", price: 1.5 }] }]
     });
 
@@ -20,7 +19,6 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                 category: product.category,
                 details: product.details || "",
                 description: product.description || "",
-                quantity: product.quantity || 0,
                 options: product.options || []
             });
         } else {
@@ -30,7 +28,6 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                 category: categories.length > 0 ? categories[0].id : "",
                 details: "",
                 description: "",
-                quantity: 0,
                 options: []
             });
         }
@@ -95,8 +92,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
         onSave({
             ...formData,
             price: Number(formData.price),
-            category: Number(formData.category),
-            quantity: Number(formData.quantity)
+            category: Number(formData.category)
         });
     };
 
@@ -266,17 +262,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, categories = [] }) => 
                         </div>
 
                         {/* Additional Info */}
-                        <div className="col-span-2 grid grid-cols-2 gap-4 pt-4 border-t border-border">
-                            <div className="col-span-1">
-                                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1 mb-1 block">Stock</label>
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    value={formData.quantity}
-                                    onChange={handleChange}
-                                    className="block w-full rounded-2xl border-border bg-muted/50 p-3.5 text-sm focus:border-secondary border outline-none font-mono-numbers text-foreground"
-                                />
-                            </div>
+                        <div className="col-span-2 grid grid-cols-1 gap-4 pt-4 border-t border-border">
                             <div className="col-span-1">
                                 <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1 mb-1 block">Details courts</label>
                                 <input

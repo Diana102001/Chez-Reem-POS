@@ -94,13 +94,14 @@ const Users = () => {
                 </div>
             )}
 
-            <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <form onSubmit={handleCreateUser} autoComplete="off" className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <input
                     name="username"
                     value={form.username}
                     onChange={handleChange}
                     placeholder="Nom d'utilisateur"
                     required
+                    autoComplete="off"
                     className="px-4 py-2.5 bg-muted border border-border rounded-xl text-sm font-semibold text-foreground outline-none"
                 />
                 <input
@@ -110,6 +111,7 @@ const Users = () => {
                     onChange={handleChange}
                     placeholder="Email"
                     required
+                    autoComplete="off"
                     className="px-4 py-2.5 bg-muted border border-border rounded-xl text-sm font-semibold text-foreground outline-none"
                 />
                 <input
@@ -119,6 +121,7 @@ const Users = () => {
                     onChange={handleChange}
                     placeholder="Mot de passe"
                     required
+                    autoComplete="new-password"
                     className="px-4 py-2.5 bg-muted border border-border rounded-xl text-sm font-semibold text-foreground outline-none"
                 />
                 <div className="flex gap-2">

@@ -1,7 +1,14 @@
 from rest_framework import serializers
-from .models import Order, OrderItem
+from .models import Order, OrderItem, TaxType
 from products.models import Product
 from payments.models import Payment
+
+
+class TaxTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaxType
+        fields = ['id', 'type', 'percent']
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
@@ -16,11 +23,23 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
     payment_method = serializers.CharField(write_only=True, required=False)
+    tax_type_details = TaxTypeSerializer(source='tax_type', read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'created_at', 'status', 'total', 'items', 'payment_method']
-        read_only_fields = ['id', 'created_at', 'total']
+        fields = [
+            'id',
+            'created_at',
+            'status',
+            'tax_type',
+            'tax_type_details',
+            'subtotal',
+            'tax_amount',
+            'total',
+            'items',
+            'payment_method',
+        ]
+        read_only_fields = ['id', 'created_at', 'subtotal', 'tax_amount', 'total']
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')

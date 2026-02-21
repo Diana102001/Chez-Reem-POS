@@ -11,6 +11,7 @@ import {
     UtensilsCrossed,
     Layers,
     Users,
+    Percent,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -30,6 +31,7 @@ const Sidebar = () => {
     if (user?.role === "admin" || user?.is_superuser) {
         menuItems.push({ name: "Produits", path: "/products", icon: Package });
         menuItems.push({ name: "Categories", path: "/categories", icon: Layers });
+        menuItems.push({ name: "Types de taxe", path: "/tax-types", icon: Percent });
         menuItems.push({ name: "Utilisateurs", path: "/users", icon: Users });
     }
 

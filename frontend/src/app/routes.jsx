@@ -6,6 +6,7 @@ import Order from '../pages/Order';
 import Products from '../pages/Products';
 import Categories from '../pages/Categories';
 import Users from '../pages/Users';
+import TaxTypes from '../pages/TaxTypes';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
 import ProtectedRoute from '../components/layout/ProtectedRoute';
@@ -27,6 +28,7 @@ const AppRoutes = () => {
                 <Route path="/order/:id" element={<Order />} />
                 <Route path="/products" element={<AdminRoute><Products /></AdminRoute>} />
                 <Route path="/categories" element={<AdminRoute><Categories /></AdminRoute>} />
+                <Route path="/tax-types" element={<AdminRoute><TaxTypes /></AdminRoute>} />
                 <Route path="/users" element={<AdminRoute><Users /></AdminRoute>} />
             </Route>
         </Routes>

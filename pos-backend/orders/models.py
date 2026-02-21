@@ -1,8 +1,18 @@
 from django.db import models
+from decimal import Decimal
 
 # Create your models here.
 from django.conf import settings
 from products.models import Product
+
+
+class TaxType(models.Model):
+    type = models.CharField(max_length=100, unique=True)
+    percent = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+
+    def __str__(self):
+        return f"{self.type} ({self.percent}%)"
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -14,10 +24,26 @@ class Order(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
+    tax_type = models.ForeignKey(
+        TaxType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='orders'
+    )
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def update_total(self):
         total = sum(item.subtotal for item in self.items.all())
+        tax_percent = self.tax_type.percent if self.tax_type else 0
+        if tax_percent > 0:
+            tax_amount = total * tax_percent / (100 + tax_percent)
+        else:
+            tax_amount = Decimal('0')
+        self.subtotal = total - tax_amount
+        self.tax_amount = tax_amount
         self.total = total
         self.save()
 

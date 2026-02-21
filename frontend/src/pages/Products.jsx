@@ -151,7 +151,6 @@ const Products = () => {
                         <tr className="border-b border-border">
                             <th className="py-3 px-4 font-semibold text-muted-foreground">Nom</th>
                             {selectedCategoryId === "All" && <th className="py-3 px-4 font-semibold text-muted-foreground">Categorie</th>}
-                            <th className="py-3 px-4 font-semibold text-muted-foreground">Quantite</th>
                             <th className="py-3 px-4 font-semibold text-muted-foreground">Prix</th>
                             <th className="py-3 px-4 font-semibold text-muted-foreground text-right">Actions</th>
                         </tr>
@@ -174,7 +173,6 @@ const Products = () => {
                                         </span>
                                     </td>
                                 )}
-                                <td className="py-3 px-4 font-mono-numbers">{product.quantity}</td>
                                 <td className="py-3 px-4 font-mono-numbers">{product.price}€</td>
                                 <td className="py-3 px-4 text-right space-x-2">
                                     <button

@@ -26,7 +26,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from products.views import CategoryViewSet, ProductViewSet
-from orders.views import OrderViewSet, OrderItemViewSet, dashboard_stats
+from orders.views import OrderViewSet, OrderItemViewSet, TaxTypeViewSet, dashboard_stats
 from payments.views import PaymentViewSet
 from users.views import UserViewSet
 
@@ -40,6 +40,7 @@ router.register(r'categories', CategoryViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'orders', OrderViewSet)
 router.register(r'order-items', OrderItemViewSet)
+router.register(r'tax-types', TaxTypeViewSet)
 router.register(r'payments', PaymentViewSet)
 router.register(r'users', UserViewSet)
 

@@ -16,7 +16,6 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     details = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    quantity = models.IntegerField(default=0)
     is_available = models.BooleanField(default=True)
 
     def __str__(self):

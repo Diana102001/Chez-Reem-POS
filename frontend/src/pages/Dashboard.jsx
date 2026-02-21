@@ -4,7 +4,6 @@ import {
     ShoppingCart,
     ListOrdered,
     UtensilsCrossed,
-    Package,
     TrendingUp,
     Crown,
 } from "lucide-react";
@@ -262,54 +261,6 @@ const Dashboard = () => {
                 )}
             </div>
 
-            {/* ─── Low Stock Alerts ─── */}
-            <div className="bg-card p-8 rounded-2xl shadow-sm border border-border">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Package className="text-primary w-5 h-5" />
-                    </div>
-                    <h2 className="text-xl font-black text-foreground tracking-tight">
-                        Alertes de faible stock
-                    </h2>
-                </div>
-                {stats.low_stock_items.length === 0 ? (
-                    <p className="text-brand-secondary font-medium">
-                        Tous les produits sont bien en stock.
-                    </p>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="border-b border-border text-xs text-muted-foreground uppercase tracking-widest">
-                                    <th className="py-3 font-bold">Nom du produit</th>
-                                    <th className="py-3 font-bold">Quantité actuelle</th>
-                                    <th className="py-3 font-bold">Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stats.low_stock_items.map((item) => (
-                                    <tr
-                                        key={item.id}
-                                        className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors"
-                                    >
-                                        <td className="py-4 font-bold text-foreground">
-                                            {item.name}
-                                        </td>
-                                        <td className="py-4 text-primary font-black font-mono-numbers">
-                                            {item.quantity}
-                                        </td>
-                                        <td className="py-4">
-                                            <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-tighter">
-                                                Critique
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
         </div>
     );
 };
