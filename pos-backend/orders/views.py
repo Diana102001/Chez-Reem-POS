@@ -65,6 +65,44 @@ def _parse_report_mode(mode_str):
     return mode, None
 
 
+def _parse_dashboard_filters(request):
+    today = timezone.localdate()
+    end_raw = request.query_params.get('end_date')
+    start_raw = request.query_params.get('start_date')
+    payment_method = (request.query_params.get('payment_method') or '').strip().lower()
+    has_payment_filter = payment_method not in ('', 'all')
+    has_date_filter = bool(start_raw or end_raw)
+
+    if not has_date_filter and not has_payment_filter:
+        return None, None, None, None
+
+    if end_raw:
+        end_date, end_error = _parse_report_date(end_raw)
+        if end_error:
+            return None, None, None, end_error
+    else:
+        end_date = today
+
+    if start_raw:
+        start_date, start_error = _parse_report_date(start_raw)
+        if start_error:
+            return None, None, None, start_error
+    else:
+        start_date = end_date - timedelta(days=29)
+
+    if end_date > today:
+        return None, None, None, "end_date cannot be after today."
+    if start_date > end_date:
+        return None, None, None, "start_date must be less than or equal to end_date."
+
+    if payment_method in ('', 'all'):
+        payment_method = None
+    elif payment_method not in ('cash', 'card'):
+        return None, None, None, "Invalid payment_method. Use 'cash', 'card', or 'all'."
+
+    return start_date, end_date, payment_method, None
+
+
 def _resolve_report_window(report_date, start_date=None, opening_time=None, closing_time=None):
     start_date = start_date or report_date
     tz = timezone.get_current_timezone()
@@ -561,49 +599,102 @@ def close_daily_pos_report(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_stats(request):
-    now = timezone.now()
+    start_date, end_date, payment_method, filter_error = _parse_dashboard_filters(request)
+    if filter_error:
+        return Response({'detail': filter_error}, status=400)
 
-    # --- Totals ---
-    total_revenue = (
-        Order.objects.filter(status='paid')
-        .aggregate(total=Sum('total'))['total']
-    ) or 0
-    total_orders = Order.objects.count()
+    paid_orders_qs = Order.objects.filter(status='paid')
+    if start_date and end_date:
+        paid_orders_qs = paid_orders_qs.filter(
+            created_at__date__gte=start_date,
+            created_at__date__lte=end_date,
+        )
+    if payment_method:
+        paid_order_ids = Payment.objects.filter(
+            method=payment_method,
+        )
+        if start_date and end_date:
+            paid_order_ids = paid_order_ids.filter(
+                created_at__date__gte=start_date,
+                created_at__date__lte=end_date,
+            )
+        paid_order_ids = paid_order_ids.values_list('order_id', flat=True)
+        paid_orders_qs = paid_orders_qs.filter(id__in=paid_order_ids)
+
+    total_revenue = paid_orders_qs.aggregate(total=Sum('total'))['total'] or 0
+    total_orders = paid_orders_qs.count()
     total_products = Product.objects.count()
 
-    # --- Daily Revenue (last 30 days) ---
-    thirty_days_ago = now - timedelta(days=30)
+    sold_items_qs = OrderItem.objects.filter(order__in=paid_orders_qs)
+    total_items_sold = sold_items_qs.aggregate(total=Sum('quantity'))['total'] or 0
+
+    top_sold_products_qs = (
+        sold_items_qs.values('product__id', 'product__name')
+        .annotate(total_qty=Sum('quantity'))
+        .order_by('-total_qty', 'product__name')
+    )
+    top_sold_products = [
+        {
+            'product_id': row['product__id'],
+            'product': row['product__name'],
+            'total_qty': row['total_qty'] or 0,
+        }
+        for row in top_sold_products_qs[:10]
+    ]
+    most_sold_overall = top_sold_products[0] if top_sold_products else None
+
+    payment_breakdown_qs = (
+        Payment.objects.filter(
+            order__status='paid',
+        )
+        .values('method')
+        .annotate(order_count=Count('order_id', distinct=True), total_amount=Sum('amount'))
+        .order_by('method')
+    )
+    if start_date and end_date:
+        payment_breakdown_qs = payment_breakdown_qs.filter(
+            order__created_at__date__gte=start_date,
+            order__created_at__date__lte=end_date,
+        )
+    if payment_method:
+        payment_breakdown_qs = payment_breakdown_qs.filter(method=payment_method)
+    payment_breakdown = [
+        {
+            'method': row['method'],
+            'order_count': row['order_count'],
+            'total_amount': float(row['total_amount'] or 0),
+        }
+        for row in payment_breakdown_qs
+    ]
+
     daily_qs = (
-        Order.objects.filter(status='paid', created_at__gte=thirty_days_ago)
+        paid_orders_qs
         .annotate(date=TruncDate('created_at'))
         .values('date')
         .annotate(revenue=Sum('total'))
         .order_by('date')
     )
     daily_revenue = [
-        {'date': entry['date'].strftime('%Y-%m-%d'), 'revenue': float(entry['revenue'])}
+        {'date': entry['date'].strftime('%Y-%m-%d'), 'revenue': float(entry['revenue'] or 0)}
         for entry in daily_qs
     ]
 
-    # --- Weekly Revenue (last 12 weeks) ---
-    twelve_weeks_ago = now - timedelta(weeks=12)
     weekly_qs = (
-        Order.objects.filter(status='paid', created_at__gte=twelve_weeks_ago)
+        paid_orders_qs
         .annotate(week=TruncWeek('created_at'))
         .values('week')
         .annotate(revenue=Sum('total'))
         .order_by('week')
     )
     weekly_revenue = [
-        {'week': entry['week'].strftime('%Y-%m-%d'), 'revenue': float(entry['revenue'])}
+        {'week': entry['week'].strftime('%Y-%m-%d'), 'revenue': float(entry['revenue'] or 0)}
         for entry in weekly_qs
     ]
 
-    # --- Most Demanded Product per Category ---
     most_demanded = []
     for category in Category.objects.all():
         top_product = (
-            OrderItem.objects
+            sold_items_qs
             .filter(product__category=category)
             .values('product__id', 'product__name')
             .annotate(total_qty=Sum('quantity'))
@@ -614,13 +705,22 @@ def dashboard_stats(request):
             most_demanded.append({
                 'category': category.name,
                 'product': top_product['product__name'],
-                'total_qty': top_product['total_qty'],
+                'total_qty': top_product['total_qty'] or 0,
             })
 
     return Response({
+        'filters': {
+            'start_date': start_date.strftime('%Y-%m-%d') if start_date else None,
+            'end_date': end_date.strftime('%Y-%m-%d') if end_date else None,
+            'payment_method': payment_method or 'all',
+        },
         'total_revenue': float(total_revenue),
         'total_orders': total_orders,
         'total_products': total_products,
+        'total_items_sold': int(total_items_sold),
+        'most_sold_overall': most_sold_overall,
+        'top_sold_products': top_sold_products,
+        'payment_breakdown': payment_breakdown,
         'daily_revenue': daily_revenue,
         'weekly_revenue': weekly_revenue,
         'most_demanded_by_category': most_demanded,
