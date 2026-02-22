@@ -7,6 +7,7 @@ import Products from '../pages/Products';
 import Categories from '../pages/Categories';
 import Users from '../pages/Users';
 import TaxTypes from '../pages/TaxTypes';
+import DailyPosReport from '../pages/DailyPosReport';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
 import ProtectedRoute from '../components/layout/ProtectedRoute';
@@ -24,6 +25,7 @@ const AppRoutes = () => {
             }>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/orders" element={<Orders />} />
+                <Route path="/reports/daily" element={<DailyPosReport />} />
                 <Route path="/order" element={<Order />} />
                 <Route path="/order/:id" element={<Order />} />
                 <Route path="/products" element={<AdminRoute><Products /></AdminRoute>} />

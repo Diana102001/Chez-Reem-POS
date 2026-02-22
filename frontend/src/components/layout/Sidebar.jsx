@@ -12,6 +12,7 @@ import {
     Layers,
     Users,
     Percent,
+    FileText,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -26,6 +27,7 @@ const Sidebar = () => {
         { name: "Tableau de bord", path: "/", icon: LayoutDashboard },
         { name: "Commande", path: "/order", icon: ShoppingCart },
         { name: "Historique", path: "/orders", icon: History },
+        { name: "Rapport journalier", path: "/reports/daily", icon: FileText },
     ];
 
     if (user?.role === "admin" || user?.is_superuser) {

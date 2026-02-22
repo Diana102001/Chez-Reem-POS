@@ -26,7 +26,17 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from products.views import CategoryViewSet, ProductViewSet
-from orders.views import OrderViewSet, OrderItemViewSet, TaxTypeViewSet, dashboard_stats
+from orders.views import (
+    OrderViewSet,
+    OrderItemViewSet,
+    TaxTypeViewSet,
+    dashboard_stats,
+    close_daily_pos_report,
+    start_daily_pos_report,
+    daily_pos_report,
+    daily_pos_report_pdf,
+    export_daily_report_pdf,
+)
 from payments.views import PaymentViewSet
 from users.views import UserViewSet
 
@@ -48,6 +58,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/dashboard-stats/', dashboard_stats, name='dashboard-stats'),
+    path('api/reports/daily-pos/', daily_pos_report, name='daily-pos-report'),
+    path('api/reports/daily-pos/start/', start_daily_pos_report, name='start-daily-pos-report'),
+    path('api/reports/daily-pos/close/', close_daily_pos_report, name='close-daily-pos-report'),
+    path('api/reports/daily-pos/pdf/', daily_pos_report_pdf, name='daily-pos-report-pdf'),
+    path('api/reports/daily/pdf/<str:date>/', export_daily_report_pdf, name='export-daily-report-pdf'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

@@ -23,6 +23,13 @@ class Order(models.Model):
     ]
 
     created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_orders'
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
     tax_type = models.ForeignKey(
         TaxType,
@@ -71,3 +78,25 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} x {self.quantity}"
+
+
+class DailyClosing(models.Model):
+    report_date = models.DateField(unique=True)
+    start_date = models.DateField()
+    opening_time = models.DateTimeField(null=True, blank=True)
+    closing_time = models.DateTimeField(null=True, blank=True)
+    closed_at = models.DateTimeField(auto_now_add=True)
+    closed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='daily_closings'
+    )
+    payload = models.JSONField(default=dict)
+
+    class Meta:
+        ordering = ['-report_date']
+
+    def __str__(self):
+        return f"DailyClosing {self.report_date}"

@@ -184,6 +184,10 @@ const Orders = () => {
                         fetchOrders();
                     }}
                     orderId={orderForPayment?.id}
+                    taxTypeId={orderForPayment?.tax_type || null}
+                    subtotal={parseFloat(orderForPayment?.subtotal || 0)}
+                    taxAmount={parseFloat(orderForPayment?.tax_amount || 0)}
+                    totalWithTax={parseFloat(orderForPayment?.total || 0)}
                 />
             )}
         </div>
